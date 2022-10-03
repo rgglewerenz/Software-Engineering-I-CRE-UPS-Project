@@ -10,5 +10,7 @@ namespace DTO
     {
         public int TrackingID { get; set; }
         public Address? Address { get; set; }
+
+        public double DistanceFromPoint { get;set; }
     }
 }

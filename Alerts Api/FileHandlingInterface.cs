@@ -68,7 +68,6 @@ namespace Alerts_Api
                     saveFileDialog1.Title = "Save file as";
                     saveFileDialog1.FileName = defaultName;
                     saveFileDialog1.RestoreDirectory = true;
-                    saveFileDialog1.CheckFileExists = true;
 
                     var initalLoc = ApplicationGetLastOpenSavePath();
                     if (File.Exists(initalLoc + "\\" +defaultName))

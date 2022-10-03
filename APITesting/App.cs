@@ -85,12 +85,14 @@ namespace APITesting
                 coords = (await GPSService.GetCurrentCoordinates());
             };
 
-            var new_file_loc = FileHandlingInterface.AskUserForNewFileLocWithPrompt("TestLocation.txt", "Json Files (*.json)|*.json|Text Files (*.txt)|*.txt");
+            /*
+             * Test Writing to file with prompt
+             * var new_file_loc = FileHandlingInterface.AskUserForNewFileLocWithPrompt("TestLocation.txt", "Json Files (*.json)|*.json|Text Files (*.txt)|*.txt
+             * WriteToFile(new_file_loc, o);
+            */
 
-            WriteToFile(new_file_loc, o);
-
-
-            Console.WriteLine("Arrived");
+            o.Packages = await SortPackages(o.Packages);
+            PrintLocations(o.Packages);
         }
         void AddConfigurations(IConfigurationRoot root)
         {
@@ -101,6 +103,32 @@ namespace APITesting
             StartingAddress = appSettings.TestData.StartingAddress;
             GPSService = new GPSService();
         }
+
+        #region Printing to user
+        void PrintLocations(List<Package> packages)
+        {
+            int i = 0;
+            foreach (var package in packages)
+            {
+                Console.WriteLine($"{i}:\tid: {package.TrackingID}, address: {package.Address.Street} {package.Address.City},\n\t{package.Address.State} {package.Address.Zipcode}\n\tdistance: {package.DistanceFromPoint}");
+                Console.WriteLine("\n\n");
+                i++;
+            }
+        }
+        #endregion Printing to user
+
+        #region Sorting Method
+        async Task<List<Package>> SortPackages(List<Package> inital_item)
+        {
+            await Parallel.ForEachAsync(inital_item, async (item, a) => {
+                int loc = inital_item.FindIndex(a => a == item);
+                item = inital_item[loc];
+                item.DistanceFromPoint = (await MapApi.GetDistanceAsync(StartingAddress, item.Address));
+            });
+            inital_item.OrderBy(x => x.DistanceFromPoint);
+            return inital_item;
+        }
+        #endregion Sorting Method
 
         #region Compair Functions
         //Checks to see if the current position, and the expected positon is within the margin
@@ -140,7 +168,5 @@ namespace APITesting
             }
         }
         #endregion Read/Write to File
-
-
     }
 }
