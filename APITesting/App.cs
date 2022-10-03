@@ -31,7 +31,51 @@ namespace APITesting
         }
         public async Task Run()
         {
-            var o = ReadFromFile(FileHandlingInterface.AskUserForFileLocWithPrompt("Json Files (*.json)|*.json|Text Files (*.txt)|*.txt"))
+            JsonSerializedDataObject o = new JsonSerializedDataObject()
+            {
+                Packages = new List<Package>()
+                    {
+                        new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "Farmington Hills",
+                            Country = "US",
+                            State = "MI",
+                            Street = "30382 Nantucet Dr",
+                            Zipcode = 48336
+                        },
+                        TrackingID = 0
+                    },
+                        new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "Farmington Hills",
+                            Country = "US",
+                            State = "MI",
+                            Street = "30332 Tuck Rd",
+                            Zipcode = 48336
+                        },
+                        TrackingID = 1
+                    },
+                        new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "SouthField",
+                            Country = "US",
+                            State = "MI",
+                            Street = "21000 W 10 Mile Rd",
+                            Zipcode = 48075
+                        },
+                        TrackingID = 2
+                    }
+                    }
+            };
+            if (appSettings.AppConfig.AskUserInput)
+            {
+                o = ReadFromFile(FileHandlingInterface.AskUserForFileLocWithPrompt("Json Files (*.json)|*.json|Text Files (*.txt)|*.txt"))
                 ?? // Genereates a default one in case none is found in the location
                 new JsonSerializedDataObject()
                 {
@@ -75,6 +119,8 @@ namespace APITesting
                     }
                     }
                 };
+            }
+            
             /*
              * Test Writing to file with prompt
              * var new_file_loc = FileHandlingInterface.AskUserForNewFileLocWithPrompt("TestLocation.txt", "Json Files (*.json)|*.json|Text Files (*.txt)|*.txt
@@ -84,7 +130,17 @@ namespace APITesting
             o.Packages = await SortPackages(o.Packages);
             PrintLocations(o.Packages);
 
-            
+            var point = await MapApi.GetAddressInPointFormAsync(o.Packages[0].Address);
+            while (!IsWithin(point, 
+                (await GPSService.GetCurrentCoordinates())))
+            {
+                var distance = await MapApi.GetDistanceAsync(o.Packages[0].Address, await GPSService.GetCurrentCoordinates());
+                Console.WriteLine("Not there yet....");
+                Console.WriteLine($"distance from destination {distance} mi");
+                Console.WriteLine($"distance from destination {GetDistanceFromCoords(await GPSService.GetCurrentCoordinates(), point)}");
+                await Task.Delay(1000);
+            }
+            Console.WriteLine("You have arrived at your destintion");
         }
         void AddConfigurations(IConfigurationRoot root)
         {
@@ -119,7 +175,7 @@ namespace APITesting
                 item = inital_item[loc];
                 item.DistanceFromPoint = (await MapApi.GetDistanceAsync(item.Address, currentLocation));
             });
-            inital_item.OrderBy(x => x.DistanceFromPoint);
+            inital_item = inital_item.OrderBy(x => x.DistanceFromPoint).ToList();
             return inital_item;
         }
         #endregion Sorting Method
@@ -135,6 +191,13 @@ namespace APITesting
                                 <= appSettings.GPSSettings.ErrorBounds.Longitude);
         }
         #endregion Compair Functions
+
+        double GetDistanceFromCoords(Coordinate ExpectedPosition, Coordinate CurrentPosition)
+        {
+            return Math.Sqrt(
+                Math.Pow(ExpectedPosition.Latitude - CurrentPosition.Latitude, 2) + 
+                Math.Pow(ExpectedPosition.Longitude - CurrentPosition.Longitude, 2));
+        }
 
         #region Read/Write to File
         void WriteToFile(string fileLocation, JsonSerializedDataObject o)

@@ -12,5 +12,6 @@ namespace APITesting.Models
         public BingAppSettings BingSettings { get; set; }
         public TestData TestData { get; set; }
         public GPSSettings GPSSettings { get; set; }
+        public AppConfig AppConfig { get; set; }
     }
 }
