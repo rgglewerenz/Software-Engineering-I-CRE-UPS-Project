@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace APITesting.Models
+namespace DTO.AppSettings
 {
-    public class GPSSettings
+    public class BingAppSettings
     {
-        public ErrorBounds ErrorBounds {get; set;}
+        public string API_KEY { get; set; }
     }
 }

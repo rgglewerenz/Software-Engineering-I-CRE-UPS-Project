@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DTO", "DTO\DTO.csproj", "{8
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APITesting", "APITesting\APITesting.csproj", "{E3139973-3059-43BF-9696-20EDCDAFDA16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alerts Api", "Alerts Api\Alerts Api.csproj", "{BCE5D4C7-C306-4823-924A-43EC1436A12E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alerts Api", "Alerts Api\Alerts Api.csproj", "{BCE5D4C7-C306-4823-924A-43EC1436A12E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Tools\Tools.csproj", "{1E38C1AE-42B8-4809-BD65-860CECF5F22A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{BCE5D4C7-C306-4823-924A-43EC1436A12E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCE5D4C7-C306-4823-924A-43EC1436A12E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCE5D4C7-C306-4823-924A-43EC1436A12E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E38C1AE-42B8-4809-BD65-860CECF5F22A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E38C1AE-42B8-4809-BD65-860CECF5F22A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E38C1AE-42B8-4809-BD65-860CECF5F22A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E38C1AE-42B8-4809-BD65-860CECF5F22A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

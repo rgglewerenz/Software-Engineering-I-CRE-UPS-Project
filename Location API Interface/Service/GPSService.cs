@@ -14,6 +14,9 @@ namespace Location_API_Interface.Service
         private Coordinate? _CurrentCoordinates { get; set; }
         public Action<Coordinate>? OnCoordinateChage { get; set; }
         GeoCoordinateWatcher _watcher { get; set; }
+        GeoPositionStatus status { get; set; }
+
+        TimeSpan Timeout = TimeSpan.FromMilliseconds(5000);
 
         public GPSService()
         {
@@ -23,6 +26,8 @@ namespace Location_API_Interface.Service
             _watcher.PositionChanged +=
                     new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(_gcw_PositionChanged);
             _watcher.MovementThreshold = 50;
+
+            Task.Run(CheckTimeout);
 
             // Do not suppress prompt, and wait 1000 milliseconds to start.
             _watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
@@ -38,16 +43,19 @@ namespace Location_API_Interface.Service
         }
         private void _gcw_StatusChanged(object sender, GeoPositionStatusChangedEventArgs e)
         {
+            status = e.Status;
             if (e.Status == GeoPositionStatus.Ready)
             {
                 var coords = _watcher.Position.Location;
-                _CurrentCoordinates = new Coordinate()
+                if (coords.IsUnknown == false)
                 {
-                    Latitude = coords.Latitude,
-                    Longitude = coords.Longitude
-                };
+                    _CurrentCoordinates = new Coordinate()
+                    {
+                        Latitude = coords.Latitude,
+                        Longitude = coords.Longitude
+                    };
+                }
             }
-
         }
         private void _gcw_PositionChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
@@ -58,6 +66,18 @@ namespace Location_API_Interface.Service
                 Longitude = coord.Longitude
             };
             OnCoordinateChage?.Invoke(_CurrentCoordinates);
+        }
+
+        private async Task CheckTimeout()
+        {
+            await Task.Delay(Timeout);
+            if(_CurrentCoordinates == null)
+            {
+                Console.WriteLine("Please make sure to enable the location services in the settings menu");
+                Console.WriteLine("Press any key to close the program");
+                Console.ReadKey();
+                Environment.Exit(1);
+            }
         }
     }
 }

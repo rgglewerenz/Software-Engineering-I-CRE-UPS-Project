@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Alerts Api\Alerts Api.csproj" />
     <ProjectReference Include="..\DTO\DTO.csproj" />
     <ProjectReference Include="..\Location API Interface\Location API Interface.csproj" />
+    <ProjectReference Include="..\Tools\Tools.csproj" />
   </ItemGroup>
 
   <ItemGroup>

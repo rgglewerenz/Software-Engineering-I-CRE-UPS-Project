@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace APITesting.Models
+namespace DTO.AppSettings
 {
-    public class BingAppSettings
+    public class AppConfig
     {
-        public string API_KEY { get; set; }
+        public bool AskUserInput { get; set; }
     }
 }

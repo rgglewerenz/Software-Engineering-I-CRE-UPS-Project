@@ -70,7 +70,7 @@ namespace Alerts_Api
                     saveFileDialog1.RestoreDirectory = true;
 
                     var initalLoc = ApplicationGetLastOpenSavePath();
-                    if (File.Exists(initalLoc + "\\" +defaultName))
+                    if (!String.IsNullOrEmpty(initalLoc) && File.Exists(initalLoc + "\\" +defaultName))
                     {
                         int i = 1;
                         do

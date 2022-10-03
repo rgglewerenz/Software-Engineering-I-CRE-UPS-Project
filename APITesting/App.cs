@@ -1,5 +1,4 @@
-﻿using APITesting.Models;
-using DTO;
+﻿using DTO;
 using Location_API_Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -14,6 +13,8 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Alerts_Api;
+using DTO.AppSettings;
+using Tools;
 
 namespace APITesting
 {
@@ -75,7 +76,7 @@ namespace APITesting
             };
             if (appSettings.AppConfig.AskUserInput)
             {
-                o = ReadFromFile(FileHandlingInterface.AskUserForFileLocWithPrompt("Json Files (*.json)|*.json|Text Files (*.txt)|*.txt"))
+                o = FileHandler.ReadFromFile(FileHandlingInterface.AskUserForFileLocWithPrompt("Json Files (*.json)|*.json|Text Files (*.txt)|*.txt"))
                 ?? // Genereates a default one in case none is found in the location
                 new JsonSerializedDataObject()
                 {
@@ -120,26 +121,34 @@ namespace APITesting
                     }
                 };
             }
-            
+
             /*
              * Test Writing to file with prompt
              * var new_file_loc = FileHandlingInterface.AskUserForNewFileLocWithPrompt("TestLocation.txt", "Json Files (*.json)|*.json|Text Files (*.txt)|*.txt
              * WriteToFile(new_file_loc, o);
             */
 
-            o.Packages = await SortPackages(o.Packages);
+
+            var curr = await GPSService.GetCurrentCoordinates();
+            o.Packages = await Sorter.SortAsync(o.Packages, async (package) =>
+            {
+                package.DistanceFromPoint = await MapApi.GetDistanceAsync(package.Address, curr);
+                return package;
+            });
             PrintLocations(o.Packages);
 
             var point = await MapApi.GetAddressInPointFormAsync(o.Packages[0].Address);
-            while (!IsWithin(point, 
-                (await GPSService.GetCurrentCoordinates())))
+            while (!Comp.IsWithin(point, 
+                (await GPSService.GetCurrentCoordinates()), appSettings))
             {
                 var distance = await MapApi.GetDistanceAsync(o.Packages[0].Address, await GPSService.GetCurrentCoordinates());
                 Console.WriteLine("Not there yet....");
                 Console.WriteLine($"distance from destination {distance} mi");
-                Console.WriteLine($"distance from destination {GetDistanceFromCoords(await GPSService.GetCurrentCoordinates(), point)}");
+                Console.WriteLine($"distance from destination {Comp.GetDistanceFromCoords(await GPSService.GetCurrentCoordinates(), point)}");
                 await Task.Delay(1000);
             }
+
+
             var d = await MapApi.GetAddressFromCoordinate((await GPSService.GetCurrentCoordinates()));
             var url = MapApi.GenerateGoogleMapsUrl(d, o.Packages[2].Address);
             Console.WriteLine("You have arrived at your destintion");
@@ -167,65 +176,7 @@ namespace APITesting
         }
         #endregion Printing to user
 
-        #region Sorting Method
-        async Task<List<Package>> SortPackages(List<Package> inital_item)
-        {
-            //Checks the distance from the user's current location
-            var currentLocation = await GPSService.GetCurrentCoordinates();
-            await Parallel.ForEachAsync(inital_item, async (item, a) => {
-                int loc = inital_item.FindIndex(a => a == item);
-                item = inital_item[loc];
-                item.DistanceFromPoint = (await MapApi.GetDistanceAsync(item.Address, currentLocation));
-            });
-            inital_item = inital_item.OrderBy(x => x.DistanceFromPoint).ToList();
-            return inital_item;
-        }
-        #endregion Sorting Method
+        
 
-        #region Compair Functions
-        //Checks to see if the current position, and the expected positon is within the margin
-        //that is defined within the appsettings.json
-        bool IsWithin(Coordinate ExpectedPosition, Coordinate CurrentPosition)
-        {
-            return (Math.Abs(ExpectedPosition.Latitude - CurrentPosition.Latitude) 
-                        <= appSettings.GPSSettings.ErrorBounds.Latitude)
-                            && (Math.Abs(ExpectedPosition.Longitude - CurrentPosition.Longitude) 
-                                <= appSettings.GPSSettings.ErrorBounds.Longitude);
-        }
-
-        double GetDistanceFromCoords(Coordinate ExpectedPosition, Coordinate CurrentPosition)
-        {
-            return Math.Sqrt(
-                Math.Pow(ExpectedPosition.Latitude - CurrentPosition.Latitude, 2) +
-                Math.Pow(ExpectedPosition.Longitude - CurrentPosition.Longitude, 2));
-        }
-        #endregion Compair Functions
-
-        #region Read/Write to File
-        void WriteToFile(string fileLocation, JsonSerializedDataObject o)
-        {
-            using (TextWriter file = new StreamWriter(fileLocation))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(file, o);
-            }
-        }
-        JsonSerializedDataObject ReadFromFile(string fileLocation)
-        {
-            try
-            {
-                using (StreamReader file = File.OpenText(fileLocation))
-                {
-                    JsonSerializer serializer = new JsonSerializer();
-                    var obj = (JsonSerializedDataObject)serializer.Deserialize(file, typeof(JsonSerializedDataObject));
-                    return obj.Packages == null ? null : obj;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-        #endregion Read/Write to File
     }
 }

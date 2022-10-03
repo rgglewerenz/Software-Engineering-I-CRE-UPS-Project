@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace APITesting.Models
+namespace DTO.AppSettings
 {
-    public class AppConfig
+    public class GPSSettings
     {
-        public bool AskUserInput { get; set; }
+        public ErrorBounds ErrorBounds {get; set;}
     }
 }
