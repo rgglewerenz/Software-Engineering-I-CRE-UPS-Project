@@ -141,6 +141,7 @@ namespace APITesting
                 await Task.Delay(1000);
             }
             var d = await MapApi.GetAddressFromCoordinate((await GPSService.GetCurrentCoordinates()));
+            var url = MapApi.GenerateGoogleMapsUrl(d, o.Packages[2].Address);
             Console.WriteLine("You have arrived at your destintion");
         }
         void AddConfigurations(IConfigurationRoot root)

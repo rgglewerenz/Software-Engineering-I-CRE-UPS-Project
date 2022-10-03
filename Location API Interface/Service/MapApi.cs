@@ -135,6 +135,12 @@ namespace Location_API_Interface.Service
                 Zipcode = (int)o.SelectToken("resourceSets[0].resources[0].address.postalCode") 
             };
         }
+
+        public string GenerateGoogleMapsUrl(Address start, Address end)
+        {
+            return $"https://www.google.com/maps/dir/{start.Street.Replace(' ', '+')},+{start.City.Replace(' ', '+')},+{start.State}/{end.Street.Replace(' ', '+')},+{end.City.Replace(' ', '+')},+{end.State}+{end.Zipcode}";
+        }
+
         protected async Task<string> GetAsync(string url)
             {
                 try
