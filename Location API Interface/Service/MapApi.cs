@@ -103,7 +103,7 @@ namespace Location_API_Interface.Service
             }
             public async Task<Coordinate> GetAddressInPointFormAsync(Address address)
             {
-                string url = $"http://dev.virtualearth.net/REST/v1/Locations?countryRegion={address.Country}&locality={address.City.Replace(" ", "%20")}&postalCode={address.Zipcode}&addressLine={address.Street.Replace(" ", "%20")}&includeNeighborhood=false&maxResults=1&key=AiUO-7lZe8J8X5v-nZBHsIK2jVH1h29fndBkz7bp76csh6qEA1Nk6_Rhz5Drb8p0";
+                string url = $"http://dev.virtualearth.net/REST/v1/Locations?countryRegion={address.Country}&locality={address.City.Replace(" ", "%20")}&postalCode={address.Zipcode}&addressLine={address.Street.Replace(" ", "%20")}&includeNeighborhood=false&maxResults=1&key={api_key}";
                 var response = await GetAsync(url);
                 if (response == "")
                 {
@@ -116,7 +116,26 @@ namespace Location_API_Interface.Service
                     Longitude = (double)o.SelectToken("resourceSets[0].resources[0].point.coordinates[1]")
                 };
             }
-            protected async Task<string> GetAsync(string url)
+
+        public async Task<Address> GetAddressFromCoordinate(Coordinate Coordinate)
+        {
+            string test = $"http://dev.virtualearth.net/REST/v1/Locations/{Coordinate.Latitude},{Coordinate.Longitude}?key={api_key}";  
+            string url = $"http://dev.virtualearth.net/REST/v1/Locations?point={Coordinate.Latitude},{Coordinate.Longitude}&key={api_key}";
+            var response = await GetAsync(test);
+            if (response == "")
+            {
+                return null;
+            }
+            JObject o = JObject.Parse(response);
+            return new Address()
+            {
+                Street = (string)o.SelectToken("resourceSets[0].resources[0].address.addressLine"),
+                City = (string)o.SelectToken("resourceSets[0].resources[0].address.locality"),
+                State = (string)o.SelectToken("resourceSets[0].resources[0].address.adminDistrict"),
+                Zipcode = (int)o.SelectToken("resourceSets[0].resources[0].address.postalCode") 
+            };
+        }
+        protected async Task<string> GetAsync(string url)
             {
                 try
                 {

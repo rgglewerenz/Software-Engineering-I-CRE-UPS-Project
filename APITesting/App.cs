@@ -140,6 +140,7 @@ namespace APITesting
                 Console.WriteLine($"distance from destination {GetDistanceFromCoords(await GPSService.GetCurrentCoordinates(), point)}");
                 await Task.Delay(1000);
             }
+            var d = await MapApi.GetAddressFromCoordinate((await GPSService.GetCurrentCoordinates()));
             Console.WriteLine("You have arrived at your destintion");
         }
         void AddConfigurations(IConfigurationRoot root)
@@ -190,14 +191,14 @@ namespace APITesting
                             && (Math.Abs(ExpectedPosition.Longitude - CurrentPosition.Longitude) 
                                 <= appSettings.GPSSettings.ErrorBounds.Longitude);
         }
-        #endregion Compair Functions
 
         double GetDistanceFromCoords(Coordinate ExpectedPosition, Coordinate CurrentPosition)
         {
             return Math.Sqrt(
-                Math.Pow(ExpectedPosition.Latitude - CurrentPosition.Latitude, 2) + 
+                Math.Pow(ExpectedPosition.Latitude - CurrentPosition.Latitude, 2) +
                 Math.Pow(ExpectedPosition.Longitude - CurrentPosition.Longitude, 2));
         }
+        #endregion Compair Functions
 
         #region Read/Write to File
         void WriteToFile(string fileLocation, JsonSerializedDataObject o)
