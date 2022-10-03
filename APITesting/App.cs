@@ -31,9 +31,6 @@ namespace APITesting
         }
         public async Task Run()
         {
-            var coords = (await GPSService.GetCurrentCoordinates());
-            var destination = await MapApi.GetAddressInPointFormAsync(StartingAddress);
-
             var o = ReadFromFile(FileHandlingInterface.AskUserForFileLocWithPrompt("Json Files (*.json)|*.json|Text Files (*.txt)|*.txt"))
                 ?? // Genereates a default one in case none is found in the location
                 new JsonSerializedDataObject()
@@ -78,13 +75,6 @@ namespace APITesting
                     }
                     }
                 };
-
-
-            while (!IsWithin(coords, destination))
-            {
-                coords = (await GPSService.GetCurrentCoordinates());
-            };
-
             /*
              * Test Writing to file with prompt
              * var new_file_loc = FileHandlingInterface.AskUserForNewFileLocWithPrompt("TestLocation.txt", "Json Files (*.json)|*.json|Text Files (*.txt)|*.txt
@@ -93,6 +83,8 @@ namespace APITesting
 
             o.Packages = await SortPackages(o.Packages);
             PrintLocations(o.Packages);
+
+            
         }
         void AddConfigurations(IConfigurationRoot root)
         {
@@ -120,10 +112,12 @@ namespace APITesting
         #region Sorting Method
         async Task<List<Package>> SortPackages(List<Package> inital_item)
         {
+            //Checks the distance from the user's current location
+            var currentLocation = await GPSService.GetCurrentCoordinates();
             await Parallel.ForEachAsync(inital_item, async (item, a) => {
                 int loc = inital_item.FindIndex(a => a == item);
                 item = inital_item[loc];
-                item.DistanceFromPoint = (await MapApi.GetDistanceAsync(StartingAddress, item.Address));
+                item.DistanceFromPoint = (await MapApi.GetDistanceAsync(item.Address, currentLocation));
             });
             inital_item.OrderBy(x => x.DistanceFromPoint);
             return inital_item;
