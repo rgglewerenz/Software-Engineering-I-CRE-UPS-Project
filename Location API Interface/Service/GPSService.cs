@@ -16,7 +16,7 @@ namespace Location_API_Interface.Service
         GeoCoordinateWatcher _watcher { get; set; }
         GeoPositionStatus status { get; set; }
 
-        TimeSpan Timeout = TimeSpan.FromMilliseconds(5000);
+        TimeSpan Timeout = TimeSpan.FromMilliseconds(10000);
 
         public GPSService()
         {
