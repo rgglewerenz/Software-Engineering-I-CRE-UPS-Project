@@ -135,11 +135,12 @@ namespace APITesting
                 package.DistanceFromPoint = await MapApi.GetDistanceAsync(package.Address, curr);
                 return package;
             });
+
             PrintLocations(o.Packages);
 
             var point = await MapApi.GetAddressInPointFormAsync(o.Packages[0].Address);
             while (!Comp.IsWithin(point, 
-                (await GPSService.GetCurrentCoordinates()), appSettings))
+                (await GPSService.GetCurrentCoordinates()), appSettings.GPSSettings.ErrorBounds))
             {
                 var distance = await MapApi.GetDistanceAsync(o.Packages[0].Address, await GPSService.GetCurrentCoordinates());
                 Console.WriteLine("Not there yet....");
@@ -175,8 +176,5 @@ namespace APITesting
             }
         }
         #endregion Printing to user
-
-        
-
     }
 }

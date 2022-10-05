@@ -67,7 +67,6 @@ namespace Location_API_Interface.Service
             };
             OnCoordinateChage?.Invoke(_CurrentCoordinates);
         }
-
         private async Task CheckTimeout()
         {
             await Task.Delay(Timeout);

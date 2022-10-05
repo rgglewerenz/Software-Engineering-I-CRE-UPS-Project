@@ -9,12 +9,12 @@ namespace Tools
 {
     public class Comp
     {
-        public static bool IsWithin(Coordinate ExpectedPosition, Coordinate CurrentPosition, DTO.AppSettings.AppSettings appSettings)
+        public static bool IsWithin(Coordinate ExpectedPosition, Coordinate CurrentPosition, DTO.AppSettings.ErrorBounds errorBounds)
         {
             return (Math.Abs(ExpectedPosition.Latitude - CurrentPosition.Latitude)
-                        <= appSettings.GPSSettings.ErrorBounds.Latitude)
+                        <= errorBounds.Latitude)
                             && (Math.Abs(ExpectedPosition.Longitude - CurrentPosition.Longitude)
-                                <= appSettings.GPSSettings.ErrorBounds.Longitude);
+                                <= errorBounds.Longitude);
         }
         public static double GetDistanceFromCoords(Coordinate ExpectedPosition, Coordinate CurrentPosition)
         {
