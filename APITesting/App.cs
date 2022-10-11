@@ -154,6 +154,7 @@ namespace APITesting
             var url = MapApi.GenerateGoogleMapsUrl(d, o.Packages[2].Address);
             Console.WriteLine("You have arrived at your destintion");
         }
+
         void AddConfigurations(IConfigurationRoot root)
         {
             appSettings = root.Get<AppSettings>();

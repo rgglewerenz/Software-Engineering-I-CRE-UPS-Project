@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APITesting", "APITesting\AP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alerts Api", "Alerts Api\Alerts Api.csproj", "{BCE5D4C7-C306-4823-924A-43EC1436A12E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Tools\Tools.csproj", "{1E38C1AE-42B8-4809-BD65-860CECF5F22A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tools", "Tools\Tools.csproj", "{1E38C1AE-42B8-4809-BD65-860CECF5F22A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopApp", "DesktopApp\DesktopApp.csproj", "{DC5711D6-71ED-4F60-9915-6F280BA862D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{1E38C1AE-42B8-4809-BD65-860CECF5F22A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E38C1AE-42B8-4809-BD65-860CECF5F22A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E38C1AE-42B8-4809-BD65-860CECF5F22A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC5711D6-71ED-4F60-9915-6F280BA862D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC5711D6-71ED-4F60-9915-6F280BA862D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC5711D6-71ED-4F60-9915-6F280BA862D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC5711D6-71ED-4F60-9915-6F280BA862D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
