@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tools", "Tools\Tools.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DesktopApp", "DesktopApp\DesktopApp.csproj", "{DC5711D6-71ED-4F60-9915-6F280BA862D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestingWithBlazor", "TestingWithBlazor\TestingWithBlazor.csproj", "{6E98D6C4-4101-456D-9330-3A5EBC76BFBD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestingWithBlazor", "TestingWithBlazor\TestingWithBlazor.csproj", "{6E98D6C4-4101-456D-9330-3A5EBC76BFBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

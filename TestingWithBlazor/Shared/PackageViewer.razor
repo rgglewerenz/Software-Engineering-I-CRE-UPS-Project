@@ -1,0 +1,11 @@
+﻿<div class="package-container">
+    <h5>Package id = @context.TrackingID</h5>
+    <h7>@context.Address.Street</h7>
+    <br/>
+    <h7>@context.Address.City, @context.Address.State</h7>
+    <br/>
+    <h7>@context.Address.Zipcode</h7>
+</div>
+@code {
+    [Parameter] public Package context { get; set; }
+}

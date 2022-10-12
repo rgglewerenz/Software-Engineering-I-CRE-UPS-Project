@@ -10,18 +10,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ElectronNET.API;
+using Location_API_Interface.Interface;
+using Location_API_Interface.Service;
+using DTO.AppSettings;
 
 
 namespace TestingWithBlazor
 {
     public class Startup
     {
+
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            AppSettings = Configuration.GetSection("ApplicationSettings").Get<AppSettings>();
         }
 
         public IConfiguration Configuration { get; }
+        public AppSettings AppSettings { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -29,6 +36,8 @@ namespace TestingWithBlazor
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+            services.AddSingleton<IGPSService, GPSService>();
+            services.AddSingleton<IMapApi, MapApi>(x => new MapApi(AppSettings.BingSettings.API_KEY));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

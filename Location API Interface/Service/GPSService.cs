@@ -15,9 +15,6 @@ namespace Location_API_Interface.Service
         public Action<Coordinate>? OnCoordinateChage { get; set; }
         GeoCoordinateWatcher _watcher { get; set; }
         GeoPositionStatus status { get; set; }
-
-        TimeSpan Timeout = TimeSpan.FromMilliseconds(10000);
-
         public GPSService()
         {
             _watcher = new GeoCoordinateWatcher();
@@ -27,7 +24,6 @@ namespace Location_API_Interface.Service
                     new EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>(_gcw_PositionChanged);
             _watcher.MovementThreshold = 50;
 
-            Task.Run(CheckTimeout);
 
             // Do not suppress prompt, and wait 1000 milliseconds to start.
             _watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
@@ -66,17 +62,6 @@ namespace Location_API_Interface.Service
                 Longitude = coord.Longitude
             };
             OnCoordinateChage?.Invoke(_CurrentCoordinates);
-        }
-        private async Task CheckTimeout()
-        {
-            await Task.Delay(Timeout);
-            if(_CurrentCoordinates == null)
-            {
-                Console.WriteLine("Please make sure to enable the location services in the settings menu");
-                Console.WriteLine("Press any key to close the program");
-                Console.ReadKey();
-                Environment.Exit(1);
-            }
         }
     }
 }

@@ -1,0 +1,111 @@
+﻿@page "/MainApp"
+@inject IMapApi mapApi
+@inject IGPSService GpsService
+
+<button @onclick="OpenFileManager">Open File</button>
+<button @onclick="WriteDefaultInfo">Write default data to a location</button>
+
+@if (ReadInfo && Distance != 0)
+{
+    <div>
+        <h2> Distance to next position in miles</h2>
+        <h3>@Distance</h3>
+    </div>
+}
+
+@if(Packages != null){
+    <ListViewer TItem="Package" Items="@Packages" >
+        <Fragment>
+            <PackageViewer context=@context/>
+        </Fragment>
+    </ListViewer> 
+}
+
+
+@code {
+    string textFilter = "Text Files (*txt) | *txt";
+
+    bool ReadInfo = false;
+    double Distance = 0;
+
+    const double LAT_TO_MILES = 69;
+    List<Package> Packages;
+
+    Coordinate? NextPosition;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        GpsService.OnCoordinateChage += Test;
+        Test(await GpsService.GetCurrentCoordinates());
+
+    }
+
+    private async Task OpenFileManager()
+    {
+        var fileLoc = Alerts_Api.FileHandlingInterface.AskUserForFileLocWithPrompt(textFilter);
+        Packages = Tools.FileHandler.ReadFromFile(fileLoc).Packages;
+        if(NextPosition == null)
+        {
+            NextPosition = await mapApi.GetAddressInPointFormAsync((Packages[0]).Address);
+        }
+        ReadInfo = true;
+        Test(await GpsService.GetCurrentCoordinates());
+    }
+
+    private void WriteDefaultInfo()
+    {
+        var fileLoc = Alerts_Api.FileHandlingInterface.AskUserForNewFileLocWithPrompt("Default", textFilter);
+
+        Tools.FileHandler.WriteToFile(fileLoc, new JsonSerializedDataObject()
+                {
+                    Packages = new List<Package>()
+                    {
+                        new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "Farmington Hills",
+                            Country = "US",
+                            State = "MI",
+                            Street = "30382 Nantucet Dr",
+                            Zipcode = 48336
+                        },
+                        TrackingID = 0
+                    },
+                        new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "Farmington Hills",
+                            Country = "US",
+                            State = "MI",
+                            Street = "30332 Tuck Rd",
+                            Zipcode = 48336
+                        },
+                        TrackingID = 1
+                    },
+                        new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "SouthField",
+                            Country = "US",
+                            State = "MI",
+                            Street = "21000 W 10 Mile Rd",
+                            Zipcode = 48075
+                        },
+                        TrackingID = 2
+                    }
+                    }
+                });
+    }
+
+    private void Test(Coordinate newCoords)
+    {
+        if (NextPosition == null)
+            return;
+        Distance = Tools.Comp.GetDistanceFromCoords(newCoords, NextPosition) * LAT_TO_MILES ;
+        InvokeAsync(StateHasChanged);
+    }
+}
