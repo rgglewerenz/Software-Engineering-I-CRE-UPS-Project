@@ -17,10 +17,10 @@ namespace DesktopApp
 
         string TestingString { get
             {
-                return testTextBox1.Text;
+                return label1.Text;
             } set
             {
-                testTextBox1.Text = value;
+                label1.Text = value;
             }
         }
 
@@ -55,6 +55,11 @@ namespace DesktopApp
         private void testButton_Click(object sender, EventArgs e)
         {
             TestingString = $"Hello {++test}";
+        }
+
+        private void testTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            
         }
     }
 }
