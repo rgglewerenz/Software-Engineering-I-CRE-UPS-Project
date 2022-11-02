@@ -1,19 +1,41 @@
 ﻿@page "/MainApp"
+@using System.Globalization
 @inject IMapApi mapApi
 @inject IGPSService GpsService
+@inject IPackageHandler pachandler
+@inject NavigationManager navman
+@inject IAppSettingsConfig appsettings
 
-<button @onclick="OpenFileManager">Open File</button>
-<button @onclick="WriteDefaultInfo">Write default data to a location</button>
+@if(LoadingDistance){
+    <h3>loading...</h3>
+}
 
-@if (ReadInfo && Distance != 0)
+@if(Packages == null || Packages == new List<Package>() || Packages.Count() == 0){
+    <button @onclick="OpenFileManager">Open File</button>
+    <button @onclick="WriteDefaultInfo">Write default data to a location</button>
+}
+else{
+    <button @onclick="AddPackageHref">Add Package</button>
+}
+
+<ErrorMessageHandler @ref=handler ErrorMessage=@errorMessage/>
+
+@if (Packages.Count() != 0 && Distance != 0)
 {
     <div>
         <h2> Distance to next position in miles</h2>
-        <h3>@Distance</h3>
+        <h3>@Distance.ToString("N", setPrecision)</h3>
     </div>
 }
 
-@if(Packages != null){
+@if(!LoadingDistance && Distance != 0){
+    <div>
+        <h8><a target="_balank" href="@googleMapsURL">Directions</a></h8>
+    </div>
+}
+
+@if (Packages != null && Packages.Count() != 0)
+{
     <ListViewer TItem="Package" Items="@Packages" >
         <Fragment>
             <PackageViewer context=@context/>
@@ -24,33 +46,59 @@
 
 @code {
     string textFilter = "Text Files (*txt) | *txt";
+    string googleMapsURL;
+    ErrorMessageHandler handler;
 
-    bool ReadInfo = false;
+    NumberFormatInfo setPrecision = new NumberFormatInfo();
+    string errorMessage = "";
+    bool LoadingDistance = false;
+    bool AlreadyInit;
     double Distance = 0;
 
     const double LAT_TO_MILES = 69;
-    List<Package> Packages;
+
+    List<Package> Packages{
+        get{
+            return pachandler.GetPackages();
+        }
+        set {
+            pachandler.SetPackages(value);
+        }
+    }
 
     Coordinate? NextPosition;
 
     protected override async Task OnInitializedAsync()
     {
+        setPrecision.NumberDecimalDigits = 2;
         await base.OnInitializedAsync();
-        GpsService.OnCoordinateChage += Test;
+        AlreadyInit = Packages.Count() != 0;
         Test(await GpsService.GetCurrentCoordinates());
-
+        if(!AlreadyInit){
+            GpsService.OnCoordinateChage += Test;
+            return;
+        }
+        await SortAndUpdateLocation();
     }
 
     private async Task OpenFileManager()
     {
         var fileLoc = Alerts_Api.FileHandlingInterface.AskUserForFileLocWithPrompt(textFilter);
-        Packages = Tools.FileHandler.ReadFromFile(fileLoc).Packages;
-        if(NextPosition == null)
+        if (string.IsNullOrEmpty(fileLoc))
         {
-            NextPosition = await mapApi.GetAddressInPointFormAsync((Packages[0]).Address);
+            return;
         }
-        ReadInfo = true;
-        Test(await GpsService.GetCurrentCoordinates());
+        try
+        {
+            Packages = Tools.FileHandler.ReadFromFile(fileLoc).Packages;
+        }
+        catch
+        {
+            errorMessage = "File formated incorrectly";
+            handler.ShowMessage();
+            return;
+        }
+        await SortAndUpdateLocation();
     }
 
     private void WriteDefaultInfo()
@@ -105,7 +153,42 @@
     {
         if (NextPosition == null)
             return;
-        Distance = Tools.Comp.GetDistanceFromCoords(newCoords, NextPosition) * LAT_TO_MILES ;
+        Distance = Tools.Comp.GetDistanceFromCoords(newCoords, NextPosition) * LAT_TO_MILES;
+        if(Tools.Comp.IsWithin(NextPosition, newCoords, appsettings.GetAppSettings().GPSSettings.ErrorBounds)){
+            InvokeAsync(Arrived);
+        }
         InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Arrived(){
+        var tempPackages = Packages;
+        tempPackages.RemoveAt(0);
+        NextPosition = null;
+        await SortAndUpdateLocation();
+    }
+
+    private void AddPackageHref(){
+        navman.NavigateTo("/AddPackage");
+    }
+
+    private async Task SortAndUpdateLocation(){
+        LoadingDistance = true;
+        await InvokeAsync(StateHasChanged);
+        var tempPackages = Packages;
+        Packages = await Tools.Sorter.SortAsync(tempPackages, async (Package pack) => {
+            pack.DistanceFromPoint = await mapApi.GetDistanceAsync(pack.Address, await GpsService.GetCurrentCoordinates());
+            return pack;
+        });
+        googleMapsURL = mapApi.GenerateGoogleMapsUrl(await mapApi.GetAddressFromCoordinate(await GpsService.GetCurrentCoordinates()), Packages[0].Address);
+
+        if (NextPosition == null)
+        {
+            NextPosition = await mapApi.GetAddressInPointFormAsync((Packages[0]).Address);
+        }
+
+        Test(await GpsService.GetCurrentCoordinates());
+
+        LoadingDistance = false;
+        await InvokeAsync(StateHasChanged);
     }
 }

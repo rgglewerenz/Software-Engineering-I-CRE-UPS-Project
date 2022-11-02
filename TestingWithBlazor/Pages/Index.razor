@@ -1,8 +1,9 @@
 ﻿@page "/"
 @inject NavigationManager NavMan
-<h1>Hello, world!</h1>
+<h2>Hello</h2>
 
-<button @onclick="@(() => NavMan.NavigateTo("/MainApp"))">Start</button>
-
-Welcome to your new app.
+<h6>Welcome to the UPS Driver Application. This application is used to find the best route to devilver packages</h6>
+<CenterHorizontally>
+	<button @onclick="@(() => NavMan.NavigateTo("/MainApp"))">Start</button>
+</CenterHorizontally>
 

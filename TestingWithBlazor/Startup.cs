@@ -13,7 +13,8 @@ using ElectronNET.API;
 using Location_API_Interface.Interface;
 using Location_API_Interface.Service;
 using DTO.AppSettings;
-
+using TestingWithBlazor.Interface;
+using TestingWithBlazor.Service;
 
 namespace TestingWithBlazor
 {
@@ -38,6 +39,8 @@ namespace TestingWithBlazor
             services.AddServerSideBlazor();
             services.AddSingleton<IGPSService, GPSService>();
             services.AddSingleton<IMapApi, MapApi>(x => new MapApi(AppSettings.BingSettings.API_KEY));
+            services.AddSingleton<IPackageHandler, PackageHandler>();
+            services.AddSingleton<IAppSettingsConfig, AppSettingsConfig>(x => new AppSettingsConfig(AppSettings));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

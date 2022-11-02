@@ -1,0 +1,31 @@
+﻿.message-container {
+    margin: 20px;
+    margin-right: 0;
+    width: min-content;
+}
+
+.message {
+    text-transform: uppercase;
+}
+
+.close-button {
+    align-self: flex-start;
+    border-radius: 10px;
+}
+
+.collection-container {
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    background: rgb(255,255,255,1);
+    margin: 2%;
+    border-radius: 15px;
+}
+
+.item-container {
+    display: flex;
+    border: 2px solid #e55;
+    border-radius: inherit;
+    background: rgb(255,2,2,0.1);
+}

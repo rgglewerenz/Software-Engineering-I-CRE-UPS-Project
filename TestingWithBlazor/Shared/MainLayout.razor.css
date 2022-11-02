@@ -68,3 +68,13 @@
         padding-right: 1.5rem !important;
     }
 }
+
+
+.page::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+}
+
+.page::-webkit-scrollbar-thumb {
+    background-color: #000000;
+}

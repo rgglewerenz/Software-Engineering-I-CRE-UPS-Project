@@ -9,7 +9,7 @@ namespace DTO
     public class Package
     {
         public int TrackingID { get; set; }
-        public Address? Address { get; set; }
+        public Address? Address { get; set; } = new Address();
 
         public double DistanceFromPoint { get;set; }
     }

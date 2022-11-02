@@ -1,0 +1,27 @@
+﻿@if (_ShowMessage && !string.IsNullOrEmpty(ErrorMessage))
+{
+	<div class="collection-container">
+		<div class="item-container">
+			<div class="message-container">
+			<h3 class="message">@ErrorMessage</h3>
+		</div>
+		<button class="btn btn-danger close-button" @onclick="@(() => {_ShowMessage = false;})">X</button>
+		</div>
+	</div>
+	
+}
+
+@code {
+	bool _ShowMessage = false;
+	[Parameter] public string ErrorMessage { get; set; }
+
+
+
+	public void ShowMessage(string message = "")
+	{
+		_ShowMessage = true;
+		if (!string.IsNullOrEmpty(message))
+			ErrorMessage = message;
+		InvokeAsync(StateHasChanged);
+	}
+}
