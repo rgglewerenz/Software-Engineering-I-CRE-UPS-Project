@@ -1,9 +1,11 @@
 ﻿@page "/"
 @inject NavigationManager NavMan
-<h2>Hello</h2>
 
-<h6>Welcome to the UPS Driver Application. This application is used to find the best route to devilver packages</h6>
-<CenterHorizontally>
-	<button @onclick="@(() => NavMan.NavigateTo("/MainApp"))">Start</button>
-</CenterHorizontally>
+<div class="main-content">
+	<h2>Hello</h2>
+	<h6>Welcome to the UPS Driver Application. This application is used to find the best route to devilver packages</h6>
+	<CenterHorizontally>
+		<button @onclick="@(() => NavMan.NavigateTo("/MainApp"))" class="btn btn-primary">Start</button>
+	</CenterHorizontally>
+</div>
 

@@ -11,11 +11,11 @@
 }
 
 @if(Packages == null || Packages == new List<Package>() || Packages.Count() == 0){
-    <button @onclick="OpenFileManager">Open File</button>
-    <button @onclick="WriteDefaultInfo">Write default data to a location</button>
+    <button @onclick="OpenFileManager" class="btn btn-outline-primary">Open File</button>
+    <button @onclick="WriteDefaultInfo" class="btn btn-outline-secondary" >Write default data to a location</button>
 }
 else{
-    <button @onclick="AddPackageHref">Add Package</button>
+    <button @onclick="AddPackageHref" class="btn btn-outline-info">Add Package</button>
 }
 
 <ErrorMessageHandler @ref=handler ErrorMessage=@errorMessage/>

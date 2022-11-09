@@ -3,54 +3,84 @@
 @inject NavigationManager navman
 
 <ErrorMessageHandler @ref="errorMessage"></ErrorMessageHandler>
-<div class="class-container">
-	<header>Package ID</header>
-	<input type="number" @bind-value="new_package.TrackingID" />
 
-	<header>Street Address</header>
-	<input type="text" @bind-value="new_package.Address.Street" />
-	<header>City</header>
-	<input type="text" @bind-value="new_package.Address.City" />
-	<header>State</header>
-	<input type="text" @bind-value="new_package.Address.State" />
-	<header>Zip Code</header>
-	<input type="number" @bind-value="new_package.Address.Zipcode" />
-	<br/>
-	<button class="btn btn-outline-primary"@onclick="HandleAdd">Add</button>
-</div>
+<CenterHorizontally>
+	<div class="class-container">
+		<header>Package ID</header>
+		<input type="number" @bind-value="new_package.TrackingID" disabled="@loading" />
+
+		<header>Street Address</header>
+		<input type="text" @bind-value="new_package.Address.Street" disabled="@loading"/>
+
+		<header>City</header>
+		<input type="text" @bind-value="new_package.Address.City" disabled="@loading" />
+
+		<header>State</header>
+		<input type="text" @bind-value="new_package.Address.State" disabled="@loading" />
+
+		<header>Zip Code</header>
+		<input type="number" @bind-value="new_package.Address.Zipcode" disabled="@loading"/>
+
+		<br/>
+		<br/>
+
+		<CenterHorizontally>
+			<button class="btn btn-outline-primary" @onclick="HandleAdd">Add</button>
+		</CenterHorizontally>
+	</div>
+</CenterHorizontally>
 
 @code {
 	ErrorMessageHandler errorMessage;
 	Package new_package = new Package();
 
-	void HandleAdd(){
-		if(string.IsNullOrWhiteSpace(new_package.Address.Street)){
+	bool loading = false;
+
+	bool check_add(){
+		if (string.IsNullOrWhiteSpace(new_package.Address.Street))
+		{
 			errorMessage.ShowMessage("Street can not be empty");
-			return;
+			return false;
 		}
-		if(string.IsNullOrWhiteSpace(new_package.Address.City)){
+		if (string.IsNullOrWhiteSpace(new_package.Address.City))
+		{
 			errorMessage.ShowMessage("City can not be empty");
-			return;
+			return false;
 		}
-		if(string.IsNullOrWhiteSpace(new_package.Address.State)){
+		if (string.IsNullOrWhiteSpace(new_package.Address.State))
+		{
 			errorMessage.ShowMessage("State can not be empty");
-			return;
+			return false;
 		}
-		if(new_package.TrackingID == 0){
+		if (new_package.TrackingID == 0)
+		{
 			errorMessage.ShowMessage("Tracking Id can not be 0");
-			return;
+			return false;
 		}
-		if(new_package.Address.Zipcode.ToString().Count() != 5){
+		if (new_package.Address.Zipcode.ToString().Count() != 5)
+		{
 			errorMessage.ShowMessage("ZipCode must be 5 digits");
-			return;
+			return false;
 		}
-		foreach(var b in pacHandler.GetPackages()){
-			if(b.TrackingID == new_package.TrackingID){
+		foreach (var b in pacHandler.GetPackages())
+		{
+			if (b.TrackingID == new_package.TrackingID)
+			{
 				errorMessage.ShowMessage("Tracking ID must be unique");
-				return;
+				return false;
 			}
+		}
+		return true;
+	}
+
+	void HandleAdd(){
+		loading = true;
+		if(!check_add()){
+			loading = false;
+			return;
 		}
 		pacHandler.AddPackage(new_package);
 		navman.NavigateTo("/MainApp");
+		loading = false;
 	}
 }

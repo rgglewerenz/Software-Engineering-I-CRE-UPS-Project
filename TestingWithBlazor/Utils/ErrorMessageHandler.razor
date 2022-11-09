@@ -1,11 +1,13 @@
 ﻿@if (_ShowMessage && !string.IsNullOrEmpty(ErrorMessage))
 {
-	<div class="collection-container">
-		<div class="item-container">
-			<div class="message-container">
-			<h3 class="message">@ErrorMessage</h3>
-		</div>
-		<button class="btn btn-danger close-button" @onclick="@(() => {_ShowMessage = false;})">X</button>
+	<div style="width:100%;">
+		<div class="collection-container">
+			<div class="item-container">
+				<div class="message-container">
+				<h3 class="message">@ErrorMessage</h3>
+			</div>
+				<button class="btn btn-danger close-button" @onclick="@(() => {_ShowMessage = false;})">X</button>
+			</div>
 		</div>
 	</div>
 	
