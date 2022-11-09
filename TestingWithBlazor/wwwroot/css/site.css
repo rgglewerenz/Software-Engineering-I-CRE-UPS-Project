@@ -65,9 +65,9 @@ a, .btn-link {
     --secondary-text-color: #e4e4e4;
     --secondary-border-color: #780202;
     /**/
-    --tritiary-color: #acacac;
-    --tritiary-border-color: #fafafa;
-    --tritiary-text-color: black;
+    --tertiary-color: #acacac;
+    --tertiary-border-color: #3a3a3a;
+    --tertiary-text-color: black;
 }
 
 
@@ -86,7 +86,7 @@ a, .btn-link {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: var(--secondary-color);
+    background: var(--tertiary-color);
     border-radius: 10px;
 }
 /*Background*/

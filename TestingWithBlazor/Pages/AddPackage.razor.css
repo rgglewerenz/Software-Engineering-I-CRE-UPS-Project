@@ -1,9 +1,10 @@
-﻿.class-container {
+﻿/*#3a3a3a*/
+.class-container {
     margin-top: 15px;
-    border: 2px #3a3a3a solid;
+    border: 2px var(--tertiary-border-color) solid;
     border-radius: 25px;
     padding: 15px;
     width: fit-content;
-    background: var(--tritiary-color);
-    color: var(--tritiary-text-color);
+    background: var(--tertiary-color);
+    color: var(--tertiary-text-color);
 }
