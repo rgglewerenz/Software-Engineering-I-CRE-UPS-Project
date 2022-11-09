@@ -1,6 +1,8 @@
 ﻿.package-container {
     width: 300px;
-    border: 1px solid #0a0a0a;
+    border: 1px solid var(--tritiary-border-color);
+    color: var(--tritiary-text-color);
+    background-color: var(--tritiary-color);
     border-radius: 5px;
     padding: 10px;
     margin: 15px 0px 15px 0px;

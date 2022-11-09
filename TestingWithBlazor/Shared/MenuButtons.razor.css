@@ -2,12 +2,12 @@
     display: flex;
     flex-direction: row-reverse;
     justify-content: flex-start;
-    background: #2d313a;
+    background: var(--primary-color);
     align-self: stretch;
-    position:sticky;
+    position: sticky;
     width: 100%;
     -webkit-app-region: drag;
-    border-bottom: var(--frame-border-size) solid #0d010a;
+    border-bottom: var(--frame-border-size) solid var(--primary-border-color);
     height: calc(var(--frame-size));
 }
     .menu-container button {

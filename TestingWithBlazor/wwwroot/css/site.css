@@ -55,6 +55,29 @@ a, .btn-link {
     width: 20px;
 }
 
+/*Colors */
+:root {
+    --primary-color: #2d313a;
+    --primary-text-color: #bfbfbf;
+    --primary-border-color: #0d010a;
+    /**/
+    --secondary-color: #8a0505;
+    --secondary-text-color: #e4e4e4;
+    --secondary-border-color: #780202;
+    /**/
+    --tritiary-color: #acacac;
+    --tritiary-border-color: #fafafa;
+    --tritiary-text-color: black;
+}
+
+
+/*Frame vars*/
+:root {
+    --frame-size: 40px;
+    --frame-border-size: 3px;
+    --sidebar-size: 250px;
+}
+
 /* Track */
 ::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px grey;
@@ -63,17 +86,13 @@ a, .btn-link {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: rgb(5, 39, 103, 70%);
+    background: var(--secondary-color);
     border-radius: 10px;
 }
-
+/*Background*/
 ::-webkit-scrollbar {
-    background: #2d313a;
+    background: var(--primary-color);
 }
 
-/*Frame vars*/
-:root {
-    --frame-size: 40px;
-    --frame-border-size: 3px;
-    --sidebar-size: 250px;
-}
+
+
