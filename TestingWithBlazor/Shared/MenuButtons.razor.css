@@ -1,0 +1,19 @@
+﻿.menu-container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    background: #2d313a;
+    align-self: stretch;
+    position:sticky;
+    width: 100%;
+    -webkit-app-region: drag;
+    border-bottom: var(--frame-border-size) solid #0d010a;
+    height: calc(var(--frame-size));
+}
+    .menu-container button {
+        -webkit-app-region: no-drag;
+        border-radius: 0px !important;
+    }
+
+
+    

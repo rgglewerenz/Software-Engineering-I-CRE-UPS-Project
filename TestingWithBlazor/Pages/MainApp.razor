@@ -5,43 +5,48 @@
 @inject IPackageHandler pachandler
 @inject NavigationManager navman
 @inject IAppSettingsConfig appsettings
-
-@if(LoadingDistance){
-    <h3>loading...</h3>
-}
+@inject IJSRuntime js
 
 @if(Packages == null || Packages == new List<Package>() || Packages.Count() == 0){
     <button @onclick="OpenFileManager" class="btn btn-outline-primary">Open File</button>
     <button @onclick="WriteDefaultInfo" class="btn btn-outline-secondary" >Write default data to a location</button>
 }
-else{
-    <button @onclick="AddPackageHref" class="btn btn-outline-info">Add Package</button>
+
+@if(LoadingDistance){
+    <Loader/>
 }
 
 <ErrorMessageHandler @ref=handler ErrorMessage=@errorMessage/>
 
-@if (Packages.Count() != 0 && Distance != 0)
-{
-    <div>
-        <h2> Distance to next position in miles</h2>
-        <h3>@Distance.ToString("N", setPrecision)</h3>
+<div class="content-container">
+    <div class="directions-section">
+        @if (!LoadingDistance && Distance != 0)
+        {
+            <div>
+                <button @onclick="NavigateToGoogleMaps" class="btn btn-outline-primary">Directions</button>
+            </div>
+        }
     </div>
-}
-
-@if(!LoadingDistance && Distance != 0){
-    <div>
-        <h8><a target="_balank" href="@googleMapsURL">Directions</a></h8>
+    <div class="distance-section">
+        @if (Packages.Count() != 0 && Distance != 0)
+        {
+            <div>
+                <h2> Distance to next position in miles</h2>
+                <h3>@Distance.ToString("N", setPrecision)</h3>
+            </div>
+        }
     </div>
-}
-
-@if (Packages != null && Packages.Count() != 0)
-{
-    <ListViewer TItem="Package" Items="@Packages" >
-        <Fragment>
-            <PackageViewer context=@context/>
-        </Fragment>
-    </ListViewer> 
-}
+    <div class="package-section">
+         @if (Packages != null && Packages.Count() != 0)
+         {
+             <ListViewer TItem="Package" Items="@Packages" >
+                 <Fragment>
+                     <PackageViewer context=@context/>
+                 </Fragment>
+             </ListViewer> 
+         }
+    </div>
+</div>
 
 
 @code {
@@ -190,5 +195,14 @@ else{
 
         LoadingDistance = false;
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task NavigateToGoogleMaps(){
+        if(await js.InvokeAsync<bool>("isElectron")){
+            await js.InvokeVoidAsync("window.open", googleMapsURL, "_blank", "frame=true");
+        }
+        else{
+            await js.InvokeVoidAsync("window.open",googleMapsURL,"_blank");
+        }
     }
 }

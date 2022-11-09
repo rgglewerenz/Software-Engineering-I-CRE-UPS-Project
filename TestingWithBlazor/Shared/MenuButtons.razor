@@ -1,0 +1,61 @@
+﻿@inject IJSRuntime js
+@if (is_electron)
+{
+	<div class="menu-container">
+		<button @onclick=close class="btn btn-outline-danger"><span class="oi oi-circle-x"></span></button>
+		<button @onclick=maximize class="btn btn-outline-secondary"><span class="oi oi-spreadsheet"></span> </button>
+		<button @onclick=minimize class="btn btn-outline-primary"><span class="oi oi-layers"></span></button>
+	</div>
+}
+	
+
+
+@code {
+	bool is_electron = false;
+	bool maximized = false;
+	protected override async Task OnAfterRenderAsync(bool first)
+	{
+		await base.OnAfterRenderAsync(first);
+		if(first){
+			if (await IsElectron())
+			{
+				is_electron = true;
+				InvokeAsync(StateHasChanged);
+			}
+		}
+	}
+
+	private async Task minimize(){
+		if (Startup.window_ref != null){
+			Startup.window_ref.Minimize();
+		}
+	}
+
+	private async Task close()
+	{
+		if (Startup.window_ref != null)
+		{
+			Startup.window_ref.Close();
+		}
+	}
+
+	private async Task maximize()
+	{
+		if (Startup.window_ref != null)
+		{
+			if(!maximized){
+				Startup.window_ref.Maximize();
+				maximized = true;
+			}
+			else{
+				Startup.window_ref.Restore();
+				maximized = false;
+			}
+			
+		}
+	}
+
+	private async Task<bool> IsElectron(){
+		return await js.InvokeAsync<bool>("isElectron");
+	}
+}

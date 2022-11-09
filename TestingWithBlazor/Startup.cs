@@ -15,6 +15,8 @@ using Location_API_Interface.Service;
 using DTO.AppSettings;
 using TestingWithBlazor.Interface;
 using TestingWithBlazor.Service;
+using ElectronNET.API.Entities;
+using System.Security.Principal;
 
 namespace TestingWithBlazor
 {
@@ -29,18 +31,24 @@ namespace TestingWithBlazor
         }
 
         public IConfiguration Configuration { get; }
+        public static BrowserWindow? window_ref { get; set; }
         public AppSettings AppSettings { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public async void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<IGPSService, GPSService>();
-            services.AddSingleton<IMapApi, MapApi>(x => new MapApi(AppSettings.BingSettings.API_KEY));
-            services.AddSingleton<IPackageHandler, PackageHandler>();
-            services.AddSingleton<IAppSettingsConfig, AppSettingsConfig>(x => new AppSettingsConfig(AppSettings));
+            services.AddScoped<IGPSService, GPSService>();
+            services.AddScoped<IMapApi, MapApi>(x => new MapApi(AppSettings.BingSettings.API_KEY));
+            services.AddScoped<IPackageHandler, PackageHandler>();
+            services.AddScoped<IAppSettingsConfig, AppSettingsConfig>(x => new AppSettingsConfig(AppSettings));
+            if (HybridSupport.IsElectronActive)
+            {
+                var _ref = await CreateWindow();
+                window_ref = _ref;
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,20 +76,28 @@ namespace TestingWithBlazor
                 endpoints.MapFallbackToPage("/_Host");
             });
 
-            if (HybridSupport.IsElectronActive)
-            {
-                CreateWindow();
-            }
         }
 
-        private async void CreateWindow()
+
+        private BrowserWindowOptions get_options()
+        {
+            return new BrowserWindowOptions()
+            {
+                DarkTheme = true,
+                Frame = false,
+                BackgroundColor = "#2d313a"
+            };
+        }
+
+        private async Task<BrowserWindow> CreateWindow()
         {
             
             Electron.Menu.SetApplicationMenu(new ElectronNET.API.Entities.MenuItem[] { });
-            var window = await Electron.WindowManager.CreateWindowAsync();
+            var window = await Electron.WindowManager.CreateWindowAsync(get_options());
             window.OnClosed += () => {
                 Electron.App.Quit();
             };
+            return window;
         }
     }
 }

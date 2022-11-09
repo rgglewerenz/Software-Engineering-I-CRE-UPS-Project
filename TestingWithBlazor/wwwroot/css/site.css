@@ -66,3 +66,14 @@ a, .btn-link {
     background: rgb(5, 39, 103, 70%);
     border-radius: 10px;
 }
+
+::-webkit-scrollbar {
+    background: #2d313a;
+}
+
+/*Frame vars*/
+:root {
+    --frame-size: 40px;
+    --frame-border-size: 3px;
+    --sidebar-size: 250px;
+}
