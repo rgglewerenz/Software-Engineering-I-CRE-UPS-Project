@@ -57,17 +57,17 @@ a, .btn-link {
 
 /*Colors */
 :root {
-    --primary-color: #2d313a;
-    --primary-text-color: #bfbfbf;
+    --primary-color: #250C05;
+    --primary-text-color: #FFc500;
     --primary-border-color: #0d010a;
     /**/
-    --secondary-color: #8a0505;
-    --secondary-text-color: #8a0505;
-    --secondary-border-color: #780202;
+    --secondary-color: #ff9500;
+    --secondary-text-color: #452C25;
+    --secondary-border-color: #250C05;
     /**/
-    --tertiary-color: #acacac;
-    --tertiary-border-color: #3a3a3a;
-    --tertiary-text-color: black;
+    --tertiary-color: #351C15;
+    --tertiary-border-color: #351C15;
+    --tertiary-text-color: #FFB500;
 }
 
 
