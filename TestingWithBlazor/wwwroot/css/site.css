@@ -86,7 +86,7 @@ a, .btn-link {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: var(--tertiary-color);
+    background: var(--secondary-color);
     border-radius: 10px;
 }
 /*Background*/
