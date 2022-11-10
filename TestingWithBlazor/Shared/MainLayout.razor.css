@@ -92,7 +92,7 @@
 }
 
 
-@media(max-height: 300px) and (min-width: 641px) {
+@media(max-height: 400px) and (min-width: 641px) {
     .sidebar {
         background-image: none;
         background: var(--secondary-color);
