@@ -6,6 +6,7 @@
 
 .message {
     text-transform: uppercase;
+    color: var(--secondary-text-color);
 }
 
 .close-button {

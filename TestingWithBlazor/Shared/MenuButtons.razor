@@ -20,20 +20,21 @@
 			if (await IsElectron())
 			{
 				is_electron = true;
-				InvokeAsync(StateHasChanged);
+				await InvokeAsync(StateHasChanged);
 			}
 		}
 	}
 
 	private async Task minimize(){
-		if (Startup.window_ref != null){
+		if (Startup.window_ref != null && await IsElectron()){
 			Startup.window_ref.Minimize();
 		}
 	}
 
 	private async Task close()
 	{
-		if (Startup.window_ref != null)
+
+		if (Startup.window_ref != null && await IsElectron())
 		{
 			Startup.window_ref.Close();
 		}
@@ -41,7 +42,7 @@
 
 	private async Task maximize()
 	{
-		if (Startup.window_ref != null)
+		if (Startup.window_ref != null && await IsElectron())
 		{
 			if(!maximized){
 				Startup.window_ref.Maximize();

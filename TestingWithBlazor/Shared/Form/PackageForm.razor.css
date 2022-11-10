@@ -1,0 +1,9 @@
+﻿.class-container {
+    margin-top: 15px;
+    border: 2px var(--tertiary-border-color) solid;
+    border-radius: 25px;
+    padding: 15px;
+    width: fit-content;
+    background: var(--tertiary-color);
+    color: var(--tertiary-text-color);
+}

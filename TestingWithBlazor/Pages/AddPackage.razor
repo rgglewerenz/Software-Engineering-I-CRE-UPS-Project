@@ -2,41 +2,15 @@
 @inject IPackageHandler pacHandler
 @inject NavigationManager navman
 
-<ErrorMessageHandler @ref="errorMessage"></ErrorMessageHandler>
+<header style="text-align:center">Add Package</header>
 
-<CenterHorizontally>
-	<div class="class-container">
-		<header>Package ID</header>
-		<input type="number" @bind-value="new_package.TrackingID" disabled="@loading" />
-
-		<header>Street Address</header>
-		<input type="text" @bind-value="new_package.Address.Street" disabled="@loading"/>
-
-		<header>City</header>
-		<input type="text" @bind-value="new_package.Address.City" disabled="@loading" />
-
-		<header>State</header>
-		<input type="text" @bind-value="new_package.Address.State" disabled="@loading" />
-
-		<header>Zip Code</header>
-		<input type="number" @bind-value="new_package.Address.Zipcode" disabled="@loading"/>
-
-		<br/>
-		<br/>
-
-		<CenterHorizontally>
-			<button class="btn btn-outline-primary" @onclick="HandleAdd">Add</button>
-		</CenterHorizontally>
-	</div>
-</CenterHorizontally>
+<TestingWithBlazor.Shared.Form.PackageForm ButtonText="Add" Check_Handle="@check_add"  OnValidSubmit="@ValidSubmit"/>
 
 @code {
-	ErrorMessageHandler errorMessage;
-	Package new_package = new Package();
 
 	bool loading = false;
 
-	bool check_add(){
+	bool check_add(ErrorMessageHandler errorMessage, Package new_package){
 		if (string.IsNullOrWhiteSpace(new_package.Address.Street))
 		{
 			errorMessage.ShowMessage("Street can not be empty");
@@ -73,14 +47,8 @@
 		return true;
 	}
 
-	void HandleAdd(){
-		loading = true;
-		if(!check_add()){
-			loading = false;
-			return;
-		}
-		pacHandler.AddPackage(new_package);
+	void ValidSubmit(Package var){
+		pacHandler.AddPackage(var);
 		navman.NavigateTo("/MainApp");
-		loading = false;
 	}
 }

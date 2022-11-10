@@ -1,0 +1,65 @@
+﻿@page "/EditPackage/{packageID:int}"
+@inject IPackageHandler pacHandler
+@inject NavigationManager navman
+
+<header style="text-align:center">Edit Package</header>
+
+<TestingWithBlazor.Shared.Form.PackageForm ButtonText="Save" Package="baseline_package" Check_Handle="@check_edit" EditID="false" OnValidSubmit="@ValidSubmit"/>
+
+@code {
+	[Parameter] public int packageID { get; set; }
+
+	Package baseline_package;
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+		if (!pacHandler.GetPackages().Where(x => x.TrackingID == packageID).Any())
+		{
+			return;
+		}
+		baseline_package = pacHandler.GetPackages().Where(x => x.TrackingID == packageID).First();
+	}
+
+	bool loading = false;
+
+	bool check_edit(ErrorMessageHandler errorMessage, Package new_package){
+		if (string.IsNullOrWhiteSpace(new_package.Address.Street))
+		{
+			errorMessage.ShowMessage("Street can not be empty");
+			return false;
+		}
+		if (string.IsNullOrWhiteSpace(new_package.Address.City))
+		{
+			errorMessage.ShowMessage("City can not be empty");
+			return false;
+		}
+		if (string.IsNullOrWhiteSpace(new_package.Address.State))
+		{
+			errorMessage.ShowMessage("State can not be empty");
+			return false;
+		}
+		if (new_package.Address.Zipcode.ToString().Count() != 5)
+		{
+			errorMessage.ShowMessage("ZipCode must be 5 digits");
+			return false;
+		}
+		return true;
+	}
+
+	void ValidSubmit(Package var){
+		var tempPackages = pacHandler.GetPackages();
+
+		for(int i =0; i < tempPackages.Count; i++)
+		{
+			if(tempPackages[i].TrackingID == var.TrackingID)
+			{
+				tempPackages[i] = var;
+				break;
+			}
+		}
+
+		pacHandler.SetPackages(tempPackages);
+		navman.NavigateTo("/MainApp");
+	}
+}

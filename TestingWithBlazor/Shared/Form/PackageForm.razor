@@ -1,0 +1,51 @@
+﻿<ErrorMessageHandler @ref="errorMessage"></ErrorMessageHandler>
+
+<CenterHorizontally>
+	<div class="class-container">
+		<header>Package ID</header>
+		<input type="number" @bind-value="@Package.TrackingID" disabled="@loading || @EditID"  />
+
+		<header>Street Address</header>
+		<input type="text" @bind-value="@Package.Address.Street" disabled="@loading"/>
+
+		<header>City</header>
+		<input type="text" @bind-value="@Package.Address.City" disabled="@loading" />
+
+		<header>State</header>
+		<input type="text" @bind-value="@Package.Address.State" disabled="@loading" />
+
+		<header>Zip Code</header>
+		<input type="number" @bind-value="@Package.Address.Zipcode" disabled="@loading"/>
+
+		<br/>
+		<br/>
+
+		<CenterHorizontally>
+			<button class="btn btn-outline-primary" @onclick="OnSubmit">@ButtonText</button>
+		</CenterHorizontally>
+	</div>
+</CenterHorizontally>
+
+@code {
+	[Parameter] public Func<ErrorMessageHandler, Package,bool> Check_Handle { get; set; }
+	[Parameter] public Action<Package> OnValidSubmit { get; set; }
+	[Parameter] public string ButtonText { get; set; } = "Submit";
+	[Parameter] public bool EditID { get; set; } = false;
+	
+	[Parameter] public Package Package { get; set; } = new Package();
+
+	ErrorMessageHandler errorMessage;
+	bool loading = false;
+
+
+	void OnSubmit()
+	{
+		loading = true;
+		if (!Check_Handle.Invoke(errorMessage, Package))
+		{
+			loading = false;
+			return;
+		}
+		OnValidSubmit.Invoke(Package);
+	}
+}
