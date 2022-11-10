@@ -1,0 +1,16 @@
+﻿.package-container {
+    width: 300px;
+    border: 1px solid var(--tertiary-border-color);
+    color: var(--tertiary-text-color);
+    background-color: var(--tertiary-color);
+    border-radius: 5px;
+    padding: 10px;
+    margin: 15px 0px 15px 0px;
+}
+
+.address-view {
+    margin-left: 15px;
+    margin-bottom: 5px;
+}
+body {
+}

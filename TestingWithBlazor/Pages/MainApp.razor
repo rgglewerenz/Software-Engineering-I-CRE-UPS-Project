@@ -64,10 +64,10 @@
 
     List<Package> Packages{
         get{
-            return pachandler.GetPackages();
+            return pachandler.Packages;
         }
         set {
-            pachandler.SetPackages(value);
+            pachandler.Packages = value;
         }
     }
 
@@ -84,6 +84,12 @@
             return;
         }
         await SortAndUpdateLocation();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
+        //js.InvokeVoidAsync("alert", Packages.Count);
     }
 
     private async Task OpenFileManager()
@@ -204,5 +210,11 @@
         else{
             await js.InvokeVoidAsync("window.open",googleMapsURL,"_blank");
         }
+    }
+
+    private void Delete(Package var)
+    {
+        Packages.Remove(var);
+        InvokeAsync(StateHasChanged);
     }
 }

@@ -1,4 +1,7 @@
 ﻿@inject NavigationManager navman
+@inject IPackageHandler pacHandler
+@inject IJSRuntime js
+
 
 <div class="package-container">
     <div style="width:100%;text-align:center;">
@@ -10,14 +13,20 @@
         <h7>@context.Address.City, @context.Address.State</h7>
         <h7>@context.Address.Zipcode</h7>
     </div>
+    <div style="width:100%;text-align:center;">
+        <h5>Distance : @context.DistanceFromPoint MI</h5>
+    </div>
     <CenterHorizontally>
-        <button class="btn btn-outline-primary" @onclick=onClick>Edit</button>
+        <button class="btn btn-outline-primary" @onclick=toEdit>Edit</button>
+        <button class="btn btn-outline-danger" @onclick=@( () => Delete.Invoke(context))>Delete</button>
     </CenterHorizontally>
 </div>
 @code {
     [Parameter] public Package context { get; set; }
+    [Parameter] public Action<Package> Delete { get; set; }
 
-    void onClick(){
+    void toEdit(){
         navman.NavigateTo($"/EditPackage/{context.TrackingID}");
     }
+
 }
