@@ -13,6 +13,6 @@ var r = document.querySelector(':root');
 
 window.addEventListener('load', (event) => {
     if (!isElectron()) {
-        r.style.setProperty('--frame-size', '0px');
+       r.style.setProperty('--frame-size', '0px');
     }
 });
