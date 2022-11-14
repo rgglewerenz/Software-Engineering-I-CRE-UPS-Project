@@ -43,9 +43,9 @@
              {
                  <ListViewer TItem="Package" Items="@Packages" MaxCount="3" Skip="1" >
                      <Fragment>
-                         <CenterHorizontally>
-                             <CompactPackageViewer context=@context/>
-                         </CenterHorizontally>
+                         <div style="width:100%;">
+                              <CompactPackageViewer context=@context/>
+                         </div>
                      </Fragment>
                      <EndFragment>
                          <CenterHorizontally>
@@ -90,19 +90,26 @@
     {
         setPrecision.NumberDecimalDigits = 2;
         await base.OnInitializedAsync();
-        AlreadyInit = Packages.Count() != 0;
-        CheckIfWithin(await GpsService.GetCurrentCoordinates());
-        if(!AlreadyInit){
-            GpsService.OnCoordinateChage += CheckIfWithin;
-            return;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if(firstRender){
+            AlreadyInit = Packages.Count() != 0;
+            CheckIfWithin(await GpsService.GetCurrentCoordinates());
+            if (!AlreadyInit)
+            {
+                GpsService.OnCoordinateChage += CheckIfWithin;
+                return;
+            }
+            await SortAndUpdateLocation();
         }
-        await SortAndUpdateLocation();
     }
 
     protected override async Task OnParametersSetAsync()
     {
         await base.OnParametersSetAsync();
-        //js.InvokeVoidAsync("alert", Packages.Count);
     }
 
     private async Task OpenFileManager()
@@ -137,7 +144,9 @@
     private void WriteDefaultInfo()
     {
         var fileLoc = Alerts_Api.FileHandlingInterface.AskUserForNewFileLocWithPrompt("Default", textFilter);
-
+        if(string.IsNullOrEmpty(fileLoc)){
+            return;
+        }
         Tools.FileHandler.WriteToFile(fileLoc, new JsonSerializedDataObject()
                 {
                     Packages = new List<Package>()
@@ -177,6 +186,30 @@
                             Zipcode = 48075
                         },
                         TrackingID = 2
+                    },
+                    new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "SouthField",
+                            Country = "US",
+                            State = "MI",
+                            Street = "22000 W 10 Mile Rd",
+                            Zipcode = 48075
+                        },
+                        TrackingID = 4
+                    },
+                    new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "Farmingtion",
+                            Country = "US",
+                            State = "MI",
+                            Street = "22128 Farmington Rd",
+                            Zipcode = 48336
+                        },
+                        TrackingID = 3
                     }
                     }
                 });

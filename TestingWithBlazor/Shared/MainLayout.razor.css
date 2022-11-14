@@ -10,10 +10,6 @@
     max-height:100vh;
 }
 
-.main{
-    overflow-y:auto;
-}
-
 .on-top {
     position: fixed;
     width: 100%;
@@ -22,6 +18,8 @@
 
 .main {
     flex: 1;
+    overflow-y: auto;
+    height: calc(100vh - var(--frame-size));
 }
 
 .sidebar {
