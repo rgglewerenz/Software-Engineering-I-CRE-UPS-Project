@@ -1,7 +1,28 @@
 ﻿@page "/DeliveryForm/{packageID:int}"
+@inject IJSRuntime js
 
 <h3>ManualDeliveryForm</h3>
 
 @code {
     [Parameter] public int packageID { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if(firstRender){
+            var a = ElectronNET.API.Electron.WindowManager.BrowserWindows;
+            ElectronNET.API.Electron.WindowManager.BrowserWindows.First().WebContents.OpenDevTools();
+            //await js.InvokeVoidAsync("console.log", a);
+           // await js.InvokeVoidAsync("alert", "Hello");
+           // await js.InvokeVoidAsync("TestElectron");
+        }
+    }
 }
