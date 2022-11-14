@@ -28,3 +28,20 @@
         width: 100%;
     }
 }
+
+.initlize-container {
+    width: 100%;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+}
+.main-content{
+    display:block;
+    width:100%;
+    text-align:center;
+}
+.button-containers {
+    margin-top: 20px;
+    width:fit-content;
+    align-self:center;
+}
