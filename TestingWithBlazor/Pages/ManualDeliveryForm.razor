@@ -1,28 +1,32 @@
 ﻿@page "/DeliveryForm/{packageID:int}"
 @inject IJSRuntime js
+@inject IPackageHandler pacHandler
 
 <h3>ManualDeliveryForm</h3>
+
+@if(pac != null){
+
+}
+else{
+    <Loader/>
+}
 
 @code {
     [Parameter] public int packageID { get; set; }
 
 
+    Package pac;
+
     protected override async Task OnInitializedAsync()
     {
+        pac = pacHandler.Packages.Where(x => x.TrackingID == packageID).FirstOrDefault();
         await base.OnInitializedAsync();
-
-
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
         if(firstRender){
-            var a = ElectronNET.API.Electron.WindowManager.BrowserWindows;
-            ElectronNET.API.Electron.WindowManager.BrowserWindows.First().WebContents.OpenDevTools();
-            //await js.InvokeVoidAsync("console.log", a);
-           // await js.InvokeVoidAsync("alert", "Hello");
-           // await js.InvokeVoidAsync("TestElectron");
         }
     }
 }
