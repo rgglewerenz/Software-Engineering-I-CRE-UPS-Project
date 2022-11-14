@@ -6,6 +6,7 @@
     color: var(--primary-text-color);
     min-height: 100vh;
     position: sticky;
+    overflow-y: auto;
 }
 
 .on-top{
@@ -96,15 +97,6 @@
     .sidebar {
         background-image: none;
         background: var(--secondary-color);
-        min-height: 100%;
+        min-height: 100vh;
     }
-}
-
-.page::-webkit-scrollbar {
-    width: 6px;
-    background-color: var(--secondary-color);
-}
-
-.page::-webkit-scrollbar-thumb {
-    background-color: var(--primary-color);
 }

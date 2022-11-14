@@ -3,7 +3,7 @@
 <CenterHorizontally>
 	<div class="class-container">
 		<header>Package ID</header>
-		<input type="number" @bind-value="@Package.TrackingID" disabled="@loading || @EditID"  />
+		<input type="number" @bind-value="@Package.TrackingID" disabled="@(loading || !EditID)"  />
 
 		<header>Street Address</header>
 		<input type="text" @bind-value="@Package.Address.Street" disabled="@loading"/>
@@ -18,8 +18,20 @@
 		<input type="number" @bind-value="@Package.Address.Zipcode" disabled="@loading"/>
 
 		<br/>
-		<br/>
 
+		<header>Dimensions</header>
+		<input type="text" @bind-value="@Package.Details.Dimensions" disabled="@loading"/>
+
+
+		<header>Reciever's Name</header>
+		<input type="text" @bind-value="@Package.Details.RecieversName" disabled="@loading"/>
+
+		<header>Weight</header>
+		<input type="number" @bind-value="@Package.Details.Weight" disabled="@loading"/>
+
+		<br/>
+		<br/>
+		
 		<CenterHorizontally>
 			<button class="btn btn-outline-primary" @onclick="OnSubmit">@ButtonText</button>
 		</CenterHorizontally>
@@ -40,6 +52,7 @@
 
 	void OnSubmit()
 	{
+
 		loading = true;
 		if (!Check_Handle.Invoke(errorMessage, Package))
 		{

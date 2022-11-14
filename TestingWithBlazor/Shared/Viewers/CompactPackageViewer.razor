@@ -1,0 +1,18 @@
+﻿@inject NavigationManager navman
+@inject IPackageHandler pacHandler
+
+<div class="compact-package-container">
+    <div style="width:100%;text-align:center;">
+        <h5>Package ID : @context.TrackingID</h5>
+    </div>
+    <CenterHorizontally>
+        <button class="btn btn-outline-primary" @onclick=Edit>Edit</button>
+    </CenterHorizontally>
+</div>
+@code {
+    [Parameter] public Package context { get; set; }
+
+    void Edit(){
+        navman.NavigateTo($"/EditPackage/{context.TrackingID}");
+    }
+}

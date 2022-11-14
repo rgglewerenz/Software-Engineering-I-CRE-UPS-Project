@@ -1,0 +1,10 @@
+﻿.compact-package-container {
+    width: 100%;
+    max-width: 200px;
+    border: 1px solid var(--tertiary-border-color);
+    color: var(--tertiary-text-color);
+    background-color: var(--tertiary-color);
+    border-radius: 5px;
+    padding: 10px;
+    margin: 15px 0px 15px 0px;
+}

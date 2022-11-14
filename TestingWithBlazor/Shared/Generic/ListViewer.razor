@@ -3,12 +3,37 @@
 @if(Items.Count > 0)
 {
 	<ul>
-		@foreach(var b in Items)
+		@if(MaxCount == 0 && Skip == 0)
 		{
-			<oi>
-				@Fragment(b)
-			</oi>
-		}	
+			@foreach(var b in Items)
+			{
+				<oi>
+					@Fragment(b)
+				</oi>
+			}
+		}
+		else if (MaxCount == 0)
+		{
+			@for(int i = Skip; i < Items.Count; i++)
+			{
+				<oi>
+					@Fragment(Items[i])
+				</oi>
+			}
+		}
+		else
+		{
+			@for(int i = Skip; i < ((MaxCount + Skip) > Items.Count ? Items.Count: (MaxCount + Skip)); i++)
+			{
+				<oi>
+					@Fragment(Items[i])
+				</oi>
+			}
+			@if((Items.Count - Skip) > MaxCount){
+				@EndFragment
+			}
+		}
+			
 	</ul>
 	
 }
@@ -18,4 +43,10 @@
 	[Parameter] public List<TItem> Items { get; set; }
 
 	[Parameter] public RenderFragment<TItem> Fragment { get; set; }
+
+	[Parameter] public RenderFragment EndFragment { get; set; }
+
+	[Parameter] public int MaxCount { get; set; } = 0;
+	
+	[Parameter] public int Skip { get; set; } = 0;
 }

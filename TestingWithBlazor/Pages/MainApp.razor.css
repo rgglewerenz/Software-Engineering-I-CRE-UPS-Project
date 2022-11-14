@@ -4,14 +4,23 @@
     width:100%;
 }
 
-.directions-section {
-
+.main-package-container{
+    width: 65%;
 }
 
-.distance-section {
-
+.package-section {
+    margin-top:15px;
+    width: 25%;
 }
 
-.package-section{
 
+@media (max-width: 641px) {
+
+    .main-package-container {
+        width: 100%;
+    }
+
+    .package-section {
+        width: 100%;
+    }
 }

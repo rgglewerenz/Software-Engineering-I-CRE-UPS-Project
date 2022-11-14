@@ -1,14 +1,22 @@
 ﻿@page "/AddPackage"
+@using System.Text.RegularExpressions
 @inject IPackageHandler pacHandler
 @inject NavigationManager navman
 
 <header style="text-align:center">Add Package</header>
 
-<TestingWithBlazor.Shared.Form.PackageForm ButtonText="Add" Check_Handle="@check_add"  OnValidSubmit="@ValidSubmit"/>
+<TestingWithBlazor.Shared.Form.PackageForm ButtonText="Add" Check_Handle="@check_add"  OnValidSubmit="@ValidSubmit" EditID=true/>
 
 @code {
 
 	bool loading = false;
+
+	string _dimension_regex = "[1-9]{1,}[.]{0,1}[1-9]{0,}[ ]{0,}x[ ]{0,}[1-9]{1,}[.]{0,1}[1-9]{0,}[ ]{0,}x[ ]{0,}[1-9]{1,}[.]{0,1}[1-9]{0,}[ ]{0,}";
+
+	bool check_dimensions(string dimensions)
+	{
+		return Regex.IsMatch(dimensions, _dimension_regex);
+	}
 
 	bool check_add(ErrorMessageHandler errorMessage, Package new_package){
 		if (string.IsNullOrWhiteSpace(new_package.Address.Street))
@@ -34,6 +42,11 @@
 		if (new_package.Address.Zipcode.ToString().Count() != 5)
 		{
 			errorMessage.ShowMessage("ZipCode must be 5 digits");
+			return false;
+		}
+		if (!check_dimensions(new_package.Details.Dimensions))
+		{
+			errorMessage.ShowMessage("Dimensions must be 3 numbers separated by an x");
 			return false;
 		}
 		foreach (var b in pacHandler.GetPackages())

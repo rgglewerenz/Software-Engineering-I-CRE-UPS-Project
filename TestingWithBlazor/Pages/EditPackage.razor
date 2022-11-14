@@ -1,15 +1,34 @@
 ﻿@page "/EditPackage/{packageID:int}"
+@using System.Text.RegularExpressions
 @inject IPackageHandler pacHandler
 @inject NavigationManager navman
+@inject IJSRuntime js
 
-<header style="text-align:center">Edit Package</header>
 
-<TestingWithBlazor.Shared.Form.PackageForm ButtonText="Save" Package="baseline_package" Check_Handle="@check_edit" EditID="false" OnValidSubmit="@ValidSubmit"/>
+@if(baseline_package != null)
+{
+	<header style="text-align:center">Edit Package</header>
+	<TestingWithBlazor.Shared.Form.PackageForm ButtonText="Save" Package="baseline_package" Check_Handle="@check_edit" EditID="false" OnValidSubmit="@ValidSubmit"/>
+}
+else
+{
+	<h2>Error</h2>
+	<h8>Unable to find a package with the id = @packageID</h8>
+}
 
 @code {
 	[Parameter] public int packageID { get; set; }
 
 	Package baseline_package;
+
+	string _dimension_regex = "[1-9]{1,}[.]{0,1}[1-9]{0,}[ ]{0,}x[ ]{0,}[1-9]{1,}[.]{0,1}[1-9]{0,}[ ]{0,}x[ ]{0,}[1-9]{1,}[.]{0,1}[1-9]{0,}[ ]{0,}";
+
+	bool check_dimensions(string dimensions)
+	{
+		Regex regex = new Regex(_dimension_regex);
+		return Regex.IsMatch(dimensions, _dimension_regex);
+	}
+
 
 	protected override void OnInitialized()
 	{
@@ -44,6 +63,12 @@
 			errorMessage.ShowMessage("ZipCode must be 5 digits");
 			return false;
 		}
+		if (!check_dimensions(new_package.Details.Dimensions))
+		{
+			errorMessage.ShowMessage("Dimensions must be 3 numbers separated by an x");
+			return false;
+		}
+
 		return true;
 	}
 

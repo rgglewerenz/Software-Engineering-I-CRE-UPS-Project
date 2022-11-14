@@ -17,41 +17,37 @@
 }
 
 <ErrorMessageHandler @ref=handler ErrorMessage=@errorMessage/>
+@if(Packages != null && Packages != new List<Package>() && Packages.Count() != 0){
+    <div class="content-container">
+        <div class="main-package-container">
+            <MainPackageViewer context="@(Packages[0])"/>
+        </div>
+        
+        <div class="package-section">
+             @if (Packages != null && Packages.Count() != 0)
+             {
+                 <ListViewer TItem="Package" Items="@Packages" MaxCount="3" Skip="1" >
+                     <Fragment>
+                         <CenterHorizontally>
+                             <CompactPackageViewer context=@context/>
+                         </CenterHorizontally>
+                         
+                     </Fragment>
+                     <EndFragment>
+                         <CenterHorizontally>
+                            <button class="btn btn-outline-info"><a href="/ViewDetailedPackages">View All Packages</a></button>
+                         </CenterHorizontally>
+                     </EndFragment>
+                 </ListViewer> 
+             }
+        </div>
+    </div>
+}
 
-<div class="content-container">
-    <div class="directions-section">
-        @if (!LoadingDistance && Distance != 0)
-        {
-            <div>
-                <button @onclick="NavigateToGoogleMaps" class="btn btn-outline-primary">Directions</button>
-            </div>
-        }
-    </div>
-    <div class="distance-section">
-        @if (Packages.Count() != 0 && Distance != 0)
-        {
-            <div>
-                <h2> Distance to next position in miles</h2>
-                <h3>@Distance.ToString("N", setPrecision)</h3>
-            </div>
-        }
-    </div>
-    <div class="package-section">
-         @if (Packages != null && Packages.Count() != 0)
-         {
-             <ListViewer TItem="Package" Items="@Packages" >
-                 <Fragment>
-                     <PackageViewer context=@context/>
-                 </Fragment>
-             </ListViewer> 
-         }
-    </div>
-</div>
 
 
 @code {
     string textFilter = "Text Files (*txt) | *txt";
-    string googleMapsURL;
     ErrorMessageHandler handler;
 
     NumberFormatInfo setPrecision = new NumberFormatInfo();
@@ -190,7 +186,6 @@
             pack.DistanceFromPoint = await mapApi.GetDistanceAsync(pack.Address, await GpsService.GetCurrentCoordinates());
             return pack;
         });
-        googleMapsURL = mapApi.GenerateGoogleMapsUrl(await mapApi.GetAddressFromCoordinate(await GpsService.GetCurrentCoordinates()), Packages[0].Address);
 
         if (NextPosition == null)
         {
@@ -201,15 +196,6 @@
 
         LoadingDistance = false;
         await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task NavigateToGoogleMaps(){
-        if(await js.InvokeAsync<bool>("isElectron")){
-            await js.InvokeVoidAsync("window.open", googleMapsURL, "_blank", "frame=true");
-        }
-        else{
-            await js.InvokeVoidAsync("window.open",googleMapsURL,"_blank");
-        }
     }
 
     private void Delete(Package var)
