@@ -361,7 +361,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/APITesting/APITesting.csproj
-/DTO/DTO.csproj
-/Location API Interface/Location API Interface.csproj
-/TestingWithBlazor/TestingWithBlazor.csproj
