@@ -3,7 +3,7 @@
 {
 	<div class="menu-container">
 		<button @onclick=close class="btn btn-danger"><span class="oi oi-circle-x"></span></button>
-		<button @onclick=maximize class="btn btn-secondary"><span class="oi @(Startup.window_ref.IsMaximizedAsync().Result ? "oi-fullscreen-exit" : "oi-fullscreen-enter")"></span></button>
+		<button @onclick=maximize class="btn btn-secondary"><span class="oi @(is_fullScreen ? "oi-fullscreen-exit" : "oi-fullscreen-enter")"></span></button>
 		<button @onclick=minimize class="btn btn-primary"><span class="oi oi-minus"></span></button>
 	</div>
 }
@@ -11,33 +11,26 @@
 
 @code {
 	bool is_electron = false;
+	bool is_fullScreen = false;
 
-	protected override async Task OnInitializedAsync()
+	protected  override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
-		if(Startup.window_ref == null){
-			return;
-		}
-		Startup.window_ref.OnUnmaximize += () =>
-		{
-			Task.Run(async () => {
-				is_electron = false;
-				await InvokeAsync(StateHasChanged);
-				is_electron = true;
-				await InvokeAsync(StateHasChanged);
-			});
-		};
-		Startup.window_ref.OnMaximize += () =>
-		{
-			Task.Run(async () =>
-			{
-				is_electron = false;
-				await InvokeAsync(StateHasChanged);
-				is_electron = true;
-				await InvokeAsync(StateHasChanged);
-			});
-		};
 	}
+
+	[JSInvokable]
+	public async Task OnWindowChange(){
+		is_fullScreen = await js.InvokeAsync<bool>("getIsFullScreen");
+		await Task.Run(async () =>
+		{
+			is_electron = false;
+			await InvokeAsync(StateHasChanged);
+			is_electron = true;
+			await InvokeAsync(StateHasChanged);
+		});
+	}
+
+
 
 	protected override async Task OnAfterRenderAsync(bool first)
 	{
@@ -46,36 +39,41 @@
 			if (await IsElectron())
 			{
 				is_electron = true;
+				var lDotNetReference = DotNetObjectReference.Create(this);
+				await js.InvokeVoidAsync("GLOBAL.SetDotnetReference", lDotNetReference);
 				await InvokeAsync(StateHasChanged);
-				
+				//await js.InvokeVoidAsync("alert", System.Reflection.Assembly.GetExecutingAssembly().GetName().Name);
+				await js.InvokeVoidAsync("StartWatch");
 			}
 		}
+		
 	}
 
 	private async Task minimize(){
-		if (Startup.window_ref != null && await IsElectron()){
-			Startup.window_ref.Minimize();
+		if (await IsElectron()){
+			await js.InvokeVoidAsync("minimizeCurrentWindow");
 		}
 	}
 
 	private async Task close()
 	{
 
-		if (Startup.window_ref != null && await IsElectron())
+		if (await IsElectron())
 		{
-			Startup.window_ref.Close();
+			await js.InvokeVoidAsync("closeCurrentWindow");
 		}
 	}
 
 	private async Task maximize()
 	{
-		if (Startup.window_ref != null && await IsElectron())
+		if (await IsElectron())
 		{
-			if(!await Startup.window_ref.IsMaximizedAsync()){
-				Startup.window_ref.Maximize();
+			if (!await js.InvokeAsync<bool>("getIsFullScreen"))
+			{
+				await js.InvokeVoidAsync("maximizeCurrentWindow");
 			}
 			else{
-				Startup.window_ref.Restore();
+				await js.InvokeVoidAsync("restoreCurrentWindow");
 			}
 			
 		}
