@@ -1,4 +1,5 @@
-﻿@inject NavigationManager navman
+﻿@using System.Globalization
+@inject NavigationManager navman
 @inject IJSRuntime js
 @inject IMapApi mapApi
 @inject IGPSService GpsService
@@ -15,9 +16,22 @@
         <h7>@context.Address.City, @context.Address.State</h7>
         <h7>@context.Address.Zipcode</h7>
     </div>
-    <div style="width:100%;text-align:center;">
-        <h5>Distance : @context.DistanceFromPoint MI</h5>
+
+    <div class="detailed-view">
+        <h7>Distance: </h7>
+        <h7>@((context.DistanceFromPoint == 0) ? "N/A" : (context.DistanceFromPoint).ToString("N", setPrecision)) mi</h7>
+        <br/>
+        <h7>Dimensions: </h7>
+        <h7>@(string.IsNullOrEmpty(context.Details.Dimensions) ? "N/A" : context.Details.Dimensions)</h7>
+        <br/>
+        <h7>Name: </h7>
+        <h7>@(string.IsNullOrEmpty(context.Details.RecieversName) ? "N/A" : context.Details.RecieversName)</h7>
+        <br/>
+        <h7>Weight: </h7>
+        <h7>@((context.Details.Weight == 0) ? "N/A" : context.Details.Weight) lbs</h7>
+        <br/>
     </div>
+
     <CenterHorizontally>
         <button class="btn btn-outline-primary" @onclick=toEdit>Edit</button>
         <button class="btn btn-outline-info" @onclick=NavigateToGoogleMaps>Directions</button>
@@ -29,9 +43,11 @@
     [Parameter] public Action<Package> Delete { get; set; }
 
     string googleMapsURL;
+    NumberFormatInfo setPrecision = new NumberFormatInfo();
 
     protected override async Task OnInitializedAsync()
     {
+        setPrecision.NumberDecimalDigits = 2;
         await base.OnInitializedAsync();
         googleMapsURL = mapApi.GenerateGoogleMapsUrl(await mapApi.GetAddressFromCoordinate(await GpsService.GetCurrentCoordinates()), context.Address);
     }

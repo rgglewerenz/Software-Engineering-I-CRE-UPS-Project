@@ -1,0 +1,22 @@
+﻿@inject IJSRuntime js
+<CascadingValue Value="this">
+	<link rel="stylesheet" href="css/Shared/Form/RowElement.css" />
+	<div class="__row-container__">
+		@ChildContent
+	</div>
+</CascadingValue>
+
+
+@code {
+	[Parameter] public RenderFragment ChildContent { get; set; }
+
+	[Parameter] public bool KeepLayoutOnThin { get; set; } = false;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		await base.OnAfterRenderAsync(firstRender);
+		if(firstRender){
+			await js.InvokeVoidAsync("row_load", "__row-container__");
+		}
+	}
+}

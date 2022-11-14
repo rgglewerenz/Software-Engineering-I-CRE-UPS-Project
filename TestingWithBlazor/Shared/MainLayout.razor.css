@@ -4,9 +4,9 @@
     flex-direction: column;
     background-color: var(--primary-color);
     color: var(--primary-text-color);
-    min-height: 100vh;
     position: sticky;
     overflow-y: auto;
+    height:100vh;
 }
 
 .on-top{
@@ -93,10 +93,11 @@
 }
 
 
-@media(max-height: 400px) and (min-width: 641px) {
+@media(max-height: 500px) and (min-width: 641px) {
     .sidebar {
         background-image: none;
         background: var(--secondary-color);
         min-height: 100vh;
+        max-height:100vh;
     }
 }

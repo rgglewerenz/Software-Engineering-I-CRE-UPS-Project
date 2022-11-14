@@ -13,6 +13,8 @@
 
 	string _dimension_regex = "[1-9]{1,}[.]{0,1}[1-9]{0,}[ ]{0,}x[ ]{0,}[1-9]{1,}[.]{0,1}[1-9]{0,}[ ]{0,}x[ ]{0,}[1-9]{1,}[.]{0,1}[1-9]{0,}[ ]{0,}";
 
+	[CascadingParameter] public MainLayout MainLayout { get; set; }
+
 	bool check_dimensions(string dimensions)
 	{
 		return Regex.IsMatch(dimensions, _dimension_regex);
@@ -29,9 +31,9 @@
 			errorMessage.ShowMessage("City can not be empty");
 			return false;
 		}
-		if (string.IsNullOrWhiteSpace(new_package.Address.State))
+		if (string.IsNullOrWhiteSpace(new_package.Address.State) || new_package.Address.State.Count() > 2)
 		{
-			errorMessage.ShowMessage("State can not be empty");
+			errorMessage.ShowMessage("State can not be empty, and must use the 2 character code");
 			return false;
 		}
 		if (new_package.TrackingID == 0)
@@ -44,7 +46,7 @@
 			errorMessage.ShowMessage("ZipCode must be 5 digits");
 			return false;
 		}
-		if (!check_dimensions(new_package.Details.Dimensions))
+		if (!string.IsNullOrEmpty(new_package.Details.Dimensions) && !check_dimensions(new_package.Details.Dimensions))
 		{
 			errorMessage.ShowMessage("Dimensions must be 3 numbers separated by an x");
 			return false;
@@ -63,5 +65,6 @@
 	void ValidSubmit(Package var){
 		pacHandler.AddPackage(var);
 		navman.NavigateTo("/MainApp");
+		 InvokeAsync(() => MainLayout.ReloadPage());
 	}
 }

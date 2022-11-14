@@ -5,12 +5,21 @@
         <MenuButtons />
     </div>
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu @ref=navMenu/>
     </div>
-
-    <div class="main">
-        <div class="content px-4">
-            @Body
+    <CascadingValue Value="this">
+        <div class="main">
+            <div class="content px-4">
+                @Body
+            </div>
         </div>
-    </div>
+    </CascadingValue>
 </div>
+
+@code{
+    private NavMenu navMenu;
+    public async Task ReloadPage(){
+        await navMenu.Reload();
+        await InvokeAsync(StateHasChanged);
+    }
+}

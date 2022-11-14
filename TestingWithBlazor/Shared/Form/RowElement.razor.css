@@ -1,0 +1,12 @@
+﻿.row-content{
+    padding:5px;
+}
+.row-content-keep{
+    padding:5px;
+}
+
+@media(max-width: 641px) {
+    .row-content{
+        width:100% !important;
+    }
+}

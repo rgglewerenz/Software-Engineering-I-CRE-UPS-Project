@@ -19,6 +19,9 @@
 <ErrorMessageHandler @ref=handler ErrorMessage=@errorMessage/>
 @if(Packages != null && Packages != new List<Package>() && Packages.Count() != 0){
     <div class="content-container">
+        <div class="header-content">
+            <h2>Current Package</h2>
+        </div>
         <div class="main-package-container">
             <MainPackageViewer context="@(Packages[0])"/>
         </div>
@@ -47,6 +50,7 @@
 
 
 @code {
+    [CascadingParameter] public MainLayout MainLayout { get; set; }
     string textFilter = "Text Files (*txt) | *txt";
     ErrorMessageHandler handler;
 
@@ -69,14 +73,16 @@
 
     Coordinate? NextPosition;
 
+
+
     protected override async Task OnInitializedAsync()
     {
         setPrecision.NumberDecimalDigits = 2;
         await base.OnInitializedAsync();
         AlreadyInit = Packages.Count() != 0;
-        Test(await GpsService.GetCurrentCoordinates());
+        CheckIfWithin(await GpsService.GetCurrentCoordinates());
         if(!AlreadyInit){
-            GpsService.OnCoordinateChage += Test;
+            GpsService.OnCoordinateChage += CheckIfWithin;
             return;
         }
         await SortAndUpdateLocation();
@@ -102,6 +108,15 @@
         catch
         {
             errorMessage = "File formated incorrectly";
+            handler.ShowMessage();
+            return;
+        }
+        try{
+            await MainLayout.ReloadPage();
+        }
+        catch
+        {
+            errorMessage = "Unable to reload";
             handler.ShowMessage();
             return;
         }
@@ -156,7 +171,7 @@
                 });
     }
 
-    private void Test(Coordinate newCoords)
+    private void CheckIfWithin(Coordinate newCoords)
     {
         if (NextPosition == null)
             return;
@@ -192,7 +207,7 @@
             NextPosition = await mapApi.GetAddressInPointFormAsync((Packages[0]).Address);
         }
 
-        Test(await GpsService.GetCurrentCoordinates());
+        CheckIfWithin(await GpsService.GetCurrentCoordinates());
 
         LoadingDistance = false;
         await InvokeAsync(StateHasChanged);
