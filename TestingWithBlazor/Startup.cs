@@ -31,6 +31,7 @@ namespace TestingWithBlazor
         }
 
         public IConfiguration Configuration { get; }
+        public static BrowserWindow? window_ref { get; set; }
         public AppSettings AppSettings { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -46,6 +47,7 @@ namespace TestingWithBlazor
             if (HybridSupport.IsElectronActive)
             {
                 var _ref = await CreateWindow();
+                window_ref = _ref;
             }
         }
 
@@ -83,12 +85,7 @@ namespace TestingWithBlazor
             {
                 DarkTheme = true,
                 Frame = false,
-                BackgroundColor = "#2d313a",
-                WebPreferences = new WebPreferences()
-                {
-                    DevTools = true,
-                    EnableRemoteModule = true
-                }
+                BackgroundColor = "#2d313a"
             };
         }
 
