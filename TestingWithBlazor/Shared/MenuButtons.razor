@@ -3,7 +3,7 @@
 {
 	<div class="menu-container">
 		<button @onclick=close class="btn btn-danger"><span class="oi oi-circle-x"></span></button>
-		<button @onclick=maximize class="btn btn-secondary"><span class="oi @(Startup.window_ref.IsMaximizedAsync().Result ? "oi-fullscreen-exit" : "oi-fullscreen-enter")"></span> </button>
+		<button @onclick=maximize class="btn btn-secondary"><span class="oi @(Startup.window_ref.IsMaximizedAsync().Result ? "oi-fullscreen-exit" : "oi-fullscreen-enter")"></span></button>
 		<button @onclick=minimize class="btn btn-primary"><span class="oi oi-minus"></span></button>
 	</div>
 }
