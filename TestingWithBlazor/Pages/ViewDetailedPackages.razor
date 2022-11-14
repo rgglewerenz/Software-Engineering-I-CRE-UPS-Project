@@ -12,6 +12,9 @@
 			</Fragment>
 		</ListViewer>
 	</div>
+	<div class="button-containers">
+		<button class="btn btn-outline-primary" @onclick=@(() => {navman.NavigateTo("/AddPackage");})>Add Package</button>
+	</div>
 }
 else{
 	<div class="no-packages-error-conatiner">
