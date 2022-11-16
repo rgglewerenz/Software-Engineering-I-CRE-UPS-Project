@@ -31,7 +31,6 @@
     </div>
     <CenterHorizontally>
         <button class="btn btn-outline-primary" @onclick=Edit>Edit</button>
-        <button class="btn btn-outline-secondary"><a href=@($"/DeliveryForm/{context.TrackingID}")>I have arrived</a></button>
         <button class="btn btn-outline-info" @onclick=NavigateToGoogleMaps>Directions</button>
     </CenterHorizontally>
 </div>
@@ -49,8 +48,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await  base.OnInitializedAsync();
         setPrecision.NumberDecimalDigits = 2;
-        await base.OnInitializedAsync();
+    }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
         googleMapsURL = mapApi.GenerateGoogleMapsUrl(await mapApi.GetAddressFromCoordinate(await GpsService.GetCurrentCoordinates()), context.Address);
     }
 

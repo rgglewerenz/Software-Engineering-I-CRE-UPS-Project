@@ -227,8 +227,11 @@
     }
 
     private async Task Arrived(){
-        var tempPackages = Packages;
-        tempPackages.RemoveAt(0);
+        var arrived = await js.InvokeAsync<bool>("confirm", "Have you arrived at your destination? (ok = yes, cancel = no)");
+        if(!arrived){
+            return;
+        }
+        Packages.RemoveAt(0);
         NextPosition = null;
         await SortAndUpdateLocation();
     }
