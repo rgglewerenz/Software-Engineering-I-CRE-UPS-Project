@@ -75,17 +75,12 @@
         await base.OnInitializedAsync();
         AlreadyInit = Packages.Count() != 0;
         Test(await GpsService.GetCurrentCoordinates());
-        if(!AlreadyInit){
+        if (!AlreadyInit)
+        {
             GpsService.OnCoordinateChage += Test;
             return;
         }
         await SortAndUpdateLocation();
-    }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        await base.OnParametersSetAsync();
-        //js.InvokeVoidAsync("alert", Packages.Count);
     }
 
     private async Task OpenFileManager()
@@ -111,7 +106,6 @@
     private void WriteDefaultInfo()
     {
         var fileLoc = Alerts_Api.FileHandlingInterface.AskUserForNewFileLocWithPrompt("Default", textFilter);
-
         Tools.FileHandler.WriteToFile(fileLoc, new JsonSerializedDataObject()
                 {
                     Packages = new List<Package>()
