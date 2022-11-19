@@ -31,8 +31,9 @@
     </div>
     <CenterHorizontally>
         <button class="btn btn-outline-primary" @onclick=Edit>Edit</button>
-        <button class="btn btn-outline-warning" @onclick=@(() =>{navman.NavigateTo($"/DeliveryForm/{context.TrackingID}");})>I have delivered the package already</button>
         <button class="btn btn-outline-info" @onclick=NavigateToGoogleMaps>Directions</button>
+        <button class="btn btn-outline-warning" @onclick=@(() =>{navman.NavigateTo($"/DeliveryForm/{context.TrackingID}");})>I have delivered the package already</button>
+        
     </CenterHorizontally>
 </div>
 
