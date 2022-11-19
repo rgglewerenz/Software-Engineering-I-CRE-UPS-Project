@@ -1,7 +1,45 @@
 ﻿@page "/ViewDetailedPackages"
+@inject IPackageHandler pacHandler
+@inject NavigationManager navman
 
+@if(pacHandler.Packages != null && pacHandler.Packages.Count != 0){
+	<div class="main-content-container">
+		<ListViewer TItem="Package" Items="pacHandler.Packages">
+			<Fragment>
+				<CenterHorizontally>
+					<DetailedPackageViewer context=@context Delete="Delete"/>
+				</CenterHorizontally>
+			</Fragment>
+		</ListViewer>
+	</div>
+	<CenterHorizontally>
+		<div class="button-containers">
+			<button class="btn btn-outline-primary" @onclick=@(() => {navman.NavigateTo("/AddPackage");})>Add Package</button>
+		</div>
+	</CenterHorizontally>
+	<br/>
+	<br/>
+	<br/>
+}
+else{
+	<div class="no-packages-error-conatiner">
+		<h2>Error</h2>
+		<h8>There are 0 packages loaded</h8>
+		<br/>
+		<br/>
+		<button class="btn btn-outline-warning" @onclick=NavigateBack >Go Back To App</button>
+	</div>
+}
 
 
 @code {
+	private void Delete(Package var)
+	{
+		pacHandler.Packages.Remove(var);
+		InvokeAsync(StateHasChanged);
+	}
 
+	private void NavigateBack(){
+		navman.NavigateTo("/MainApp");
+	}
 }

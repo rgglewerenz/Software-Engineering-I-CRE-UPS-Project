@@ -1,5 +1,6 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href=""><img src="/images/UPSLogo.png" style="width:40px;"/></a>
+﻿@inject IPackageHandler pacHanlder
+<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand" href="/MainApp"><img src="/images/UPSLogo.png" style="width:40px;"/></a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -17,6 +18,11 @@
             <NavLink class="nav-link" href="/AddPackage" Match="NavLinkMatch.All">
                 <span class="oi oi-plus" aria-hidden="true"></span> <h8>Add Package</h8>
             </NavLink>
+            @if(pacHanlder.Packages != null && pacHanlder.Packages.Count != 0){
+                <NavLink class="nav-link" href="/ViewDetailedPackages" Match="NavLinkMatch.All">
+                    <span class="oi oi-align-left" aria-hidden="true"></span> <h8>View All Packages</h8>
+                </NavLink>
+            }
         </li>
     </ul>
 </div>
@@ -29,5 +35,9 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    public async Task Reload(){
+        await InvokeAsync(StateHasChanged);
     }
 }

@@ -1,2 +1,35 @@
-﻿body {
+﻿.main-form {
+    border-color: var(--tertiary-border-color);
+    background-color: var(--tertiary-color);
+    color: var(--tertiary-text-color);
+    border: 3px solid;
+    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
 }
+
+
+.button-area {
+    margin-top: 10px;
+    width: 100%;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.input-area{
+    display: grid;
+    width: 95%;
+    margin: auto;
+}
+
+    .input-area lable{
+        margin-left: 10px;
+    }
+
+    .input-area textarea {
+        margin-left: 10%;
+        margin-right: 10%;
+        background-color: var(--tertiary-color);
+        color: var(--tertiary-text-color);
+    }

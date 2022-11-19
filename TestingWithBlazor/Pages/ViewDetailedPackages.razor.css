@@ -1,2 +1,14 @@
-﻿body {
+﻿.main-content-container
+{
+
+}
+
+.no-packages-error-conatiner{
+    width:100%;
+    display:block;
+    text-align:center;
+}
+
+.button-containers{
+
 }

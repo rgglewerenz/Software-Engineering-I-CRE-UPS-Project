@@ -48,8 +48,14 @@
 
     protected override async Task OnInitializedAsync()
     {
+        await  base.OnInitializedAsync();
         setPrecision.NumberDecimalDigits = 2;
-        await base.OnInitializedAsync();
+    }
+
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
         googleMapsURL = mapApi.GenerateGoogleMapsUrl(await mapApi.GetAddressFromCoordinate(await GpsService.GetCurrentCoordinates()), context.Address);
     }
 

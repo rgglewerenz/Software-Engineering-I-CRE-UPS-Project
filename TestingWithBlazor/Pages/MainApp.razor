@@ -8,8 +8,20 @@
 @inject IJSRuntime js
 
 @if(Packages == null || Packages == new List<Package>() || Packages.Count() == 0){
-    <button @onclick="OpenFileManager" class="btn btn-outline-primary">Open File</button>
-    <button @onclick="WriteDefaultInfo" class="btn btn-outline-secondary" >Write default data to a location</button>
+    <div class="initlize-container">
+        <div class="main-content">
+            <h3>Welcome to the Main App</h3>
+            <br />
+            <h8>On this page you are able to load information from a file, and start your journey.</h8>
+            <br/>
+            <h8>If you reload the page/restart the app all the information about your route will be lost</h8>
+        </div>
+        <div class="button-containers">
+            <button @onclick="OpenFileManager" class="btn btn-outline-primary">Open File</button>
+            <button @onclick="WriteDefaultInfo" class="btn btn-outline-secondary">Write default data to a location</button>
+        </div>
+    </div>
+    
 }
 
 @if(LoadingDistance){
@@ -19,6 +31,9 @@
 <ErrorMessageHandler @ref=handler ErrorMessage=@errorMessage/>
 @if(Packages != null && Packages != new List<Package>() && Packages.Count() != 0){
     <div class="content-container">
+        <div class="header-content">
+            <h2>Current Package</h2>
+        </div>
         <div class="main-package-container">
             <MainPackageViewer context="@(Packages[0])"/>
         </div>
@@ -28,10 +43,9 @@
              {
                  <ListViewer TItem="Package" Items="@Packages" MaxCount="3" Skip="1" >
                      <Fragment>
-                         <CenterHorizontally>
-                             <CompactPackageViewer context=@context/>
-                         </CenterHorizontally>
-                         
+                         <div style="width:100%;">
+                              <CompactPackageViewer context=@context/>
+                         </div>
                      </Fragment>
                      <EndFragment>
                          <CenterHorizontally>
@@ -47,6 +61,7 @@
 
 
 @code {
+    [CascadingParameter] public MainLayout MainLayout { get; set; }
     string textFilter = "Text Files (*txt) | *txt";
     ErrorMessageHandler handler;
 
@@ -69,18 +84,32 @@
 
     Coordinate? NextPosition;
 
+
+
     protected override async Task OnInitializedAsync()
     {
         setPrecision.NumberDecimalDigits = 2;
         await base.OnInitializedAsync();
-        AlreadyInit = Packages.Count() != 0;
-        Test(await GpsService.GetCurrentCoordinates());
-        if (!AlreadyInit)
-        {
-            GpsService.OnCoordinateChage += Test;
-            return;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if(firstRender){
+            AlreadyInit = Packages.Count() != 0;
+            CheckIfWithin(await GpsService.GetCurrentCoordinates());
+            if (!AlreadyInit)
+            {
+                GpsService.OnCoordinateChage += CheckIfWithin;
+                return;
+            }
+            await SortAndUpdateLocation();
         }
-        await SortAndUpdateLocation();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await base.OnParametersSetAsync();
     }
 
     private async Task OpenFileManager()
@@ -100,12 +129,24 @@
             handler.ShowMessage();
             return;
         }
+        try{
+            await MainLayout.ReloadPage();
+        }
+        catch
+        {
+            errorMessage = "Unable to reload";
+            handler.ShowMessage();
+            return;
+        }
         await SortAndUpdateLocation();
     }
 
     private void WriteDefaultInfo()
     {
         var fileLoc = Alerts_Api.FileHandlingInterface.AskUserForNewFileLocWithPrompt("Default", textFilter);
+        if(string.IsNullOrEmpty(fileLoc)){
+            return;
+        }
         Tools.FileHandler.WriteToFile(fileLoc, new JsonSerializedDataObject()
                 {
                     Packages = new List<Package>()
@@ -145,12 +186,36 @@
                             Zipcode = 48075
                         },
                         TrackingID = 2
+                    },
+                    new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "SouthField",
+                            Country = "US",
+                            State = "MI",
+                            Street = "22000 W 10 Mile Rd",
+                            Zipcode = 48075
+                        },
+                        TrackingID = 4
+                    },
+                    new Package()
+                    {
+                        Address = new Address()
+                        {
+                            City = "Farmingtion",
+                            Country = "US",
+                            State = "MI",
+                            Street = "22128 Farmington Rd",
+                            Zipcode = 48336
+                        },
+                        TrackingID = 3
                     }
                     }
                 });
     }
 
-    private void Test(Coordinate newCoords)
+    private void CheckIfWithin(Coordinate newCoords)
     {
         if (NextPosition == null)
             return;
@@ -162,8 +227,11 @@
     }
 
     private async Task Arrived(){
-        var tempPackages = Packages;
-        tempPackages.RemoveAt(0);
+        var arrived = await js.InvokeAsync<bool>("confirm", "Have you arrived at your destination? (ok = yes, cancel = no)");
+        if(!arrived){
+            return;
+        }
+        Packages.RemoveAt(0);
         NextPosition = null;
         await SortAndUpdateLocation();
     }
@@ -186,7 +254,7 @@
             NextPosition = await mapApi.GetAddressInPointFormAsync((Packages[0]).Address);
         }
 
-        Test(await GpsService.GetCurrentCoordinates());
+        CheckIfWithin(await GpsService.GetCurrentCoordinates());
 
         LoadingDistance = false;
         await InvokeAsync(StateHasChanged);

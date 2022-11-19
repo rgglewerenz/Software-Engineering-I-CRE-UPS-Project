@@ -1,0 +1,28 @@
+﻿@inject IJSRuntime js
+@if(Base != null){
+	<div class="@(Base.KeepLayoutOnThin == true ? "row-content-keep": "row-content")">
+		@ChildContent
+	</div>
+}
+
+
+
+@code {
+	[Parameter] public RenderFragment ChildContent { get; set; }
+
+	[CascadingParameter] public RowContainer? Base{ get; set; }
+
+	protected override void OnAfterRender(bool firstRender)
+	{
+		if(firstRender){
+			if(Base == null){
+				js.InvokeVoidAsync("alert", "This element must be used with a Form Area");
+			}
+			else{
+
+			}
+		}
+
+	
+	}
+}

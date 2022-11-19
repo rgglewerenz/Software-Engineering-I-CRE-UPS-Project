@@ -5,6 +5,12 @@
     <div style="width:100%;text-align:center;">
         <h5>Package ID : @context.TrackingID</h5>
     </div>
+     <div class="address-view">
+        <h7>@context.Address.Street</h7>
+        <br/>
+        <h7>@context.Address.Zipcode</h7>
+    </div>
+
     <CenterHorizontally>
         <button class="btn btn-outline-primary" @onclick=Edit>Edit</button>
     </CenterHorizontally>

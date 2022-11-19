@@ -4,13 +4,17 @@
     width:100%;
 }
 
-.main-package-container{
+.header-content{
+    width:100%;
+}
+
+.main-package-container {
     width: 65%;
 }
 
 .package-section {
     margin-top:15px;
-    width: 25%;
+    width: 35%;
 }
 
 
@@ -23,4 +27,21 @@
     .package-section {
         width: 100%;
     }
+}
+
+.initlize-container {
+    width: 100%;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: center;
+}
+.main-content{
+    display:block;
+    width:100%;
+    text-align:center;
+}
+.button-containers {
+    margin-top: 20px;
+    width:fit-content;
+    align-self:center;
 }

@@ -4,19 +4,22 @@
     flex-direction: column;
     background-color: var(--primary-color);
     color: var(--primary-text-color);
-    min-height: 100vh;
     position: sticky;
-    overflow-y: auto;
+    overflow-y: clip;
+    height:100vh;
+    max-height:100vh;
 }
 
-.on-top{
-    position:fixed;
-    width:100%;
-    z-index:2;
+.on-top {
+    position: fixed;
+    width: 100%;
+    z-index: 2;
 }
 
 .main {
     flex: 1;
+    overflow-y: auto;
+    height: calc(100vh - var(--frame-size));
 }
 
 .sidebar {
@@ -93,10 +96,11 @@
 }
 
 
-@media(max-height: 400px) and (min-width: 641px) {
+@media(max-height: 500px) and (min-width: 641px) {
     .sidebar {
         background-image: none;
         background: var(--secondary-color);
         min-height: 100vh;
+        max-height:100vh;
     }
 }

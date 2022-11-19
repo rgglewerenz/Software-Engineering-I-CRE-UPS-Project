@@ -1,7 +1,41 @@
 ﻿@page "/DeliveryForm/{packageID:int}"
+@inject IJSRuntime js
+@inject IPackageHandler pacHandler
+@inject NavigationManager navman
 
-<h3>ManualDeliveryForm</h3>
+<h3>Manual Delivery Form</h3>
+
+@if(pac != null){
+    <div class="main-form">
+        <div class="input-area">
+            <label>Reason To Remove Package</label>
+            <textarea></textarea>
+        </div>
+        <div class="button-area">
+            <button class="btn btn-outline-primary" @onclick=Submit>Submit</button>
+        </div>
+    </div>
+}
+else{
+    <Loader/>
+}
 
 @code {
     [Parameter] public int packageID { get; set; }
+
+
+    Package pac;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pac = pacHandler.Packages.Where(x => x.TrackingID == packageID).FirstOrDefault();
+        await base.OnInitializedAsync();
+    }
+
+    private void Submit(){
+        if(pacHandler.Packages.Remove(pac)){
+            js.InvokeVoidAsync("alert", "able to remove package"); 
+        }
+        navman.NavigateTo("/MainApp");
+    }
 }
