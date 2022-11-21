@@ -1,0 +1,29 @@
+﻿@page "/SaveData"
+@inject IPackageHandler pacHandler
+
+<h2>Welcome to the save data page.</h2>
+<button class="btn btn-outline-primary" @onclick=Save>Click me to save</button>
+
+@code{
+    string textFilter = "Text Files (*txt) | *txt";
+
+    private void Save(){
+        string date = "date"; //ADD ACTUAL DATE 
+        var fileLoc = Alerts_Api.FileHandlingInterface.AskUserForNewFileLocWithPrompt("Packages " + date, textFilter);
+        if(string.IsNullOrEmpty(fileLoc)){
+            return;
+        }
+
+        JsonSerializedDataObject tempList = new JsonSerializedDataObject();
+        tempList.Packages = new List<Package>();
+    	foreach (Package b in pacHandler.GetPackages())
+	    {
+            
+            Console.WriteLine(b.TrackingID);
+            Package t = b;
+            tempList.Packages.Add(t); 
+        }
+
+        Tools.FileHandler.WriteToFile(fileLoc, tempList);
+    }
+}
