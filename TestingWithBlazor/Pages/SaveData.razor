@@ -5,7 +5,7 @@
 <button class="btn btn-outline-primary" @onclick=Save>Click me to save</button>
 
 @code{
-    string textFilter = "Text Files (*txt) | *txt";
+    string textFilter = "Text Files (*.txt) | *.txt";
 
     private void Save(){
         string date = "date"; //ADD ACTUAL DATE 
@@ -15,15 +15,7 @@
         }
 
         JsonSerializedDataObject tempList = new JsonSerializedDataObject();
-        tempList.Packages = new List<Package>();
-    	foreach (Package b in pacHandler.GetPackages())
-	    {
-            
-            Console.WriteLine(b.TrackingID);
-            Package t = b;
-            tempList.Packages.Add(t); 
-        }
-
+        tempList.Packages = pacHandler.Packages;
         Tools.FileHandler.WriteToFile(fileLoc, tempList);
     }
 }

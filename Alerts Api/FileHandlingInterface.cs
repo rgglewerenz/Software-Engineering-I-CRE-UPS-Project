@@ -57,6 +57,10 @@ namespace Alerts_Api
         }
         public static string AskUserForNewFileLocWithPrompt(string defaultName, string fileFilter = "CSV Files (*.csv)|*.csv")
         {
+            if (!fileFilter.Contains("."))
+            {
+                throw new ArgumentException("File filer must be in this format:\n Name (*.file_type)|*.file_type");
+            }
             string newFileLoc = "";
             do
             {
@@ -93,6 +97,13 @@ namespace Alerts_Api
                 t.Start();
                 t.Join();
             } while (string.IsNullOrWhiteSpace(newFileLoc) && UserInputInterface.AskUserConsentPrompt("Would you like to try and select a file again?", "Error Unreadable file"));
+            //Checks for user file types
+            if (!newFileLoc.Contains('.'))
+            {
+                var item = fileFilter.Split("|");
+                var file_type = item[1].Split(".")[1];
+                newFileLoc += file_type;
+            }
 
             return newFileLoc;
         }
