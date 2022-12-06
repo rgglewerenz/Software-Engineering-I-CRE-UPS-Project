@@ -1,4 +1,6 @@
 ﻿@page "/SaveData"
+@using System.Threading
+@using System.Globalization
 @inject IPackageHandler pacHandler
 
 <h2>Welcome to the save data page.</h2>
@@ -8,7 +10,9 @@
     string textFilter = "Text Files (*.txt) | *.txt";
 
     private void Save(){
-        string date = "date"; //ADD ACTUAL DATE 
+        
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+        string date = DateTime.Now.ToString().Replace('/','-').Replace(':', '-');
         var fileLoc = Alerts_Api.FileHandlingInterface.AskUserForNewFileLocWithPrompt("Packages " + date, textFilter);
         if(string.IsNullOrEmpty(fileLoc)){
             return;
