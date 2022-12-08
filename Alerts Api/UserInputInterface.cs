@@ -29,7 +29,7 @@ namespace Alerts_Api
             } while (!worked);
             return answer;
         }
-        public static bool AskUserConsentPrompt(string prompt, string Title, MessageBoxButtons buttons = MessageBoxButtons.YesNoCancel, MessageBoxIcon Icon = MessageBoxIcon.Question)
+        public static bool AskUserConsentPrompt(string prompt, string Title, MessageBoxButtons buttons = MessageBoxButtons.YesNo, MessageBoxIcon Icon = MessageBoxIcon.Question)
         {
             var _prompt = MessageBox.Show(prompt, Title, buttons, Icon);
             if (_prompt == DialogResult.Cancel)
