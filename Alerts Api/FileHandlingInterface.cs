@@ -84,7 +84,7 @@ namespace Alerts_Api
                             name += $" ({i}){ext}";
                             i++;
                             saveFileDialog1.FileName = name;
-                        } while (File.Exists(saveFileDialog1.FileName));
+                        } while (File.Exists(initalLoc + "\\" + saveFileDialog1.FileName));
                     }
                     
                     if (saveFileDialog1.ShowDialog() == DialogResult.OK)
